@@ -75,311 +75,279 @@
       </div>
     </div>
 
-
     <script>
-        // --- Mock JSON Data Files (simulating fetching from separate files) ---
-        // In a real scenario, these would be separate files on your server.
-
-        // chapters.json
-        const chaptersData = [
-            { chapter: "The Basics", file: "the-basics.json" },
-            { chapter: "Mortgage Fundamentals", file: "mortgage-fundamentals.json" },
-            { chapter: "The Closing Process", file: "the-closing-process.json" },
-            { chapter: "Investment Properties", file: "investment-properties.json" },
-            { chapter: "Real Estate Financing", file: "real-estate-financing.json" },
-        ];
-
-        // the-basics.json
-        const theBasicsData = {
-            chapter: "The Basics",
-            lessons: [
+        // --- Centralized Quiz Data ---
+        // I have moved all your mock data into a single object for better organization.
+        const quizData = {
+            chapters: [
                 {
-                    title: "Amortization and Terminology",
-                    questions: [
+                    chapter: "The Basics",
+                    file: "the-basics.json",
+                    lessons: [
                         {
-                            question: "The original amortization term minus the number of payments that have been applied refers to the:",
-                            possibleAnswers: ["Remaining interest", "Remaining term", "Total amortization term", "Loan amount"],
-                            correctAnswer: "Remaining term",
+                            title: "Amortization and Terminology",
+                            questions: [
+                                {
+                                    question: "The original amortization term minus the number of payments that have been applied refers to the:",
+                                    possibleAnswers: ["Remaining interest", "Remaining term", "Total amortization term", "Loan amount"],
+                                    correctAnswer: "Remaining term",
+                                },
+                            ]
                         },
+                        {
+                            title: "Legal Terms",
+                            questions: [
+                                {
+                                    question: "If Franklin, a real estate agent, intentionally speaks very highly and enthusiastically about a property he is trying to sell to a client in order to secure the deal, this type of behavior would be:",
+                                    possibleAnswers: ["Puffing", "Steering", "Illegal", "Misrepresentation"],
+                                    correctAnswer: "Puffing",
+                                    explanation: "The term “puffing” can be used to describe “sales talk” that is used to secure a deal. As long as there is no misrepresentation, it is considered a legal practice.",
+                                },
+                            ]
+                        },
+                        {
+                            title: "Legal and General Principles",
+                            questions: [
+                                {
+                                    question: "Which of these is considered to be an encumbrance?",
+                                    possibleAnswers: ["A lease", "A mortgage", "All of these", "An easement"],
+                                    correctAnswer: "All of these",
+                                    explanation: "A lease, mortgage, easement, or restriction is considered an encumbrance of a fee simple title.",
+                                },
+                                {
+                                    question: "A broker acting as agent for a principal has as much authority as:",
+                                    possibleAnswers: ["other parties believe the agent to possess.", "the agent chooses to accept.", "the principal actually or ostensibly confers upon him.", "he chooses to accept as limited by the Statute of Limitations."],
+                                    correctAnswer: "the principal actually or ostensibly confers upon him.",
+                                    explanation: "An agent has as much authority as his principal actually or ostensibly confers upon him.",
+                                },
+                                {
+                                    question: "What does a general warranty deed contain?",
+                                    possibleAnswers: ["None of these.", "Covenants regarding quiet enjoyment", "Covenants that warrant the new owner’s undisturbed and clear title", "Covenants that include provisions of a quitclaim deed"],
+                                    correctAnswer: "Covenants that warrant the new owner’s undisturbed and clear title",
+                                    explanation: "Covenants that warrant the new owner’s undisturbed and clear title are contained in a general warranty deed.",
+                                },
+                                {
+                                    question: "In Texas, if Heather is an agent for a buyer Harry and she shows him a property that is known to have ghosts living there according to the neighbors, but she does not inform Harry of this information, after Harry purchases the property, Heather would:",
+                                    possibleAnswers: ["Be considered to have misrepresented Harry", "Be liable for misrepresentation", "Be open to being sued by Harry if he finds out about the ghosts", "Not be liable for the nondisclosure of ghosts"],
+                                    correctAnswer: "Not be liable for the nondisclosure of ghosts",
+                                    explanation: "In Texas, agents are absolved from any liability regarding nondisclosure of stigmatized properties.",
+                                },
+                                {
+                                    question: "Constructive eviction may allow for a tenant to vacate the premises before the expiration of a lease term. Which would be an example of this?",
+                                    possibleAnswers: ["Landlord has shown property to prospective tenant and is negotiating terms", "Property cannot be used for original purpose due to unnecessary and considerable changes made by landlord", "Landlord fails to make necessary repairs", "All of the above"],
+                                    correctAnswer: "All of the above",
+                                    explanation: "All of the above are examples of constructive eviction. a) Landlord has shown property to prospective tenant and is negotiating terms b) Property cannot be used for original purpose due to unnecessary and considerable changes made by landlord c) Landlord fails to make necessary repairs",
+                                },
+                                {
+                                    question: `"A" receives a life estate for the life of "X." "A" dies before "X." The estate:`,
+                                    possibleAnswers: ["ceases to exist.", "reverts to the original grantor.", "vests in", "vests in the heirs of"],
+                                    correctAnswer: "vests in the heirs of",
+                                    explanation: `The estate vests in the heirs of "A" until "X" dies at which time the estate will revert to the original grantor.`,
+                                },
+                            ]
+                        }
                     ]
                 },
                 {
-                    title: "Legal Terms",
-                    questions: [
+                    chapter: "Mortgage Fundamentals",
+                    file: "mortgage-fundamentals.json",
+                    lessons: [
                         {
-                            question: "If Franklin, a real estate agent, intentionally speaks very highly and enthusiastically about a property he is trying to sell to a client in order to secure the deal, this type of behavior would be:",
-                            possibleAnswers: ["Puffing", "Steering", "Illegal", "Misrepresentation"],
-                            correctAnswer: "Puffing",
-                            explanation: "The term “puffing” can be used to describe “sales talk” that is used to secure a deal. As long as there is no misrepresentation, it is considered a legal practice.",
+                            title: "Mortgage Types",
+                            questions: [
+                                {
+                                    question: "Which of the following is a key characteristic of a fixed-rate mortgage?",
+                                    possibleAnswers: ["The interest rate can change over time.", "The interest rate remains the same for the entire loan term.", "The monthly payment fluctuates based on market conditions.", "It is only available for commercial properties."],
+                                    correctAnswer: "The interest rate remains the same for the entire loan term.",
+                                    explanation: "A fixed-rate mortgage is a loan where the interest rate and monthly payment remain constant throughout the entire loan term.",
+                                },
+                            ]
                         },
+                        {
+                            title: "Property Ownership",
+                            questions: [
+                                {
+                                    question: "What is a deed?",
+                                    possibleAnswers: ["A contract for a loan.", "A legal document that transfers ownership of a property.", "A property tax bill.", "A certificate of occupancy."],
+                                    correctAnswer: "A legal document that transfers ownership of a property.",
+                                    explanation: "A deed is a legal instrument used to transfer title or ownership of real property from one person to another.",
+                                },
+                            ]
+                        },
+                        {
+                            title: "Contracts and Clauses",
+                            questions: [
+                                {
+                                    question: "What is a mortgage contingency?",
+                                    possibleAnswers: ["A penalty for paying off a mortgage early.", "A clause in a purchase agreement that protects the buyer if they cannot secure financing.", "An additional fee added to the mortgage interest rate.", "A type of insurance for the property owner."],
+                                    correctAnswer: "A clause in a purchase agreement that protects the buyer if they cannot secure financing.",
+                                    explanation: "A mortgage contingency is a clause in a sales contract that specifies the sale is dependent on the buyer getting a mortgage for the property. If the buyer can't get a mortgage, they can cancel the contract without penalty.",
+                                },
+                            ]
+                        },
+                        {
+                            title: "Valuation Principles",
+                            questions: [
+                                {
+                                    question: "A couple is looking at houses and turns one down because they felt the price of the home was too high. This is based on what principle of real estate?",
+                                    possibleAnswers: ["Conformity", "Anticipation", "Substitution", "All of these"],
+                                    correctAnswer: "Substitution",
+                                    explanation: "The principle of substitution is the basis of the appraisal process. Explained simply, value is set by the cost of getting an equally desirable substitute.",
+                                },
+                            ]
+                        }
                     ]
                 },
-                // New lesson with questions from the user
                 {
-                    title: "Legal and General Principles",
-                    questions: [
-                         {
-                             question: "Which of these is considered to be an encumbrance?",
-                             possibleAnswers: ["A lease", "A mortgage", "All of these", "An easement"],
-                             correctAnswer: "All of these",
-                             explanation: "A lease, mortgage, easement, or restriction is considered an encumbrance of a fee simple title.",
-                         },
-                         {
-                             question: "A broker acting as agent for a principal has as much authority as:",
-                             possibleAnswers: ["other parties believe the agent to possess.", "the agent chooses to accept.", "the principal actually or ostensibly confers upon him.", "he chooses to accept as limited by the Statute of Limitations."],
-                             correctAnswer: "the principal actually or ostensibly confers upon him.",
-                             explanation: "An agent has as much authority as his principal actually or ostensibly confers upon him.",
-                         },
-                         {
-                             question: "What does a general warranty deed contain?",
-                             possibleAnswers: ["None of these.", "Covenants regarding quiet enjoyment", "Covenants that warrant the new owner’s undisturbed and clear title", "Covenants that include provisions of a quitclaim deed"],
-                             correctAnswer: "Covenants that warrant the new owner’s undisturbed and clear title",
-                             explanation: "Covenants that warrant the new owner’s undisturbed and clear title are contained in a general warranty deed.",
-                         },
-                         {
-                             question: "In Texas, if Heather is an agent for a buyer Harry and she shows him a property that is known to have ghosts living there according to the neighbors, but she does not inform Harry of this information, after Harry purchases the property, Heather would:",
-                             possibleAnswers: ["Be considered to have misrepresented Harry", "Be liable for misrepresentation", "Be open to being sued by Harry if he finds out about the ghosts", "Not be liable for the nondisclosure of ghosts"],
-                             correctAnswer: "Not be liable for the nondisclosure of ghosts",
-                             explanation: "In Texas, agents are absolved from any liability regarding nondisclosure of stigmatized properties.",
-                         },
-                         {
-                             question: "Constructive eviction may allow for a tenant to vacate the premises before the expiration of a lease term. Which would be an example of this?",
-                             possibleAnswers: ["Landlord has shown property to prospective tenant and is negotiating terms", "Property cannot be used for original purpose due to unnecessary and considerable changes made by landlord", "Landlord fails to make necessary repairs", "All of the above"],
-                             correctAnswer: "All of the above",
-                             explanation: "All of the above are examples of constructive eviction. a) Landlord has shown property to prospective tenant and is negotiating terms b) Property cannot be used for original purpose due to unnecessary and considerable changes made by landlord c) Landlord fails to make necessary repairs",
-                         },
-                         {
-                             question: `"A" receives a life estate for the life of "X." "A" dies before "X." The estate:`,
-                             possibleAnswers: ["ceases to exist.", "reverts to the original grantor.", "vests in", "vests in the heirs of"],
-                             correctAnswer: "vests in the heirs of",
-                             explanation: `The estate vests in the heirs of "A" until "X" dies at which time the estate will revert to the original grantor.`,
-                         },
+                    chapter: "The Closing Process",
+                    file: "the-closing-process.json",
+                    lessons: [
+                        {
+                            title: "Closing Costs",
+                            questions: [
+                                {
+                                    question: "Which of the following is typically considered a closing cost?",
+                                    possibleAnswers: ["Utility bills", "Property taxes", "Earnest money deposit", "Home appraisal fee"],
+                                    correctAnswer: "Home appraisal fee",
+                                    explanation: "Closing costs are fees associated with the purchase of a home. A home appraisal fee is a common example, while property taxes and utility bills are ongoing expenses, and an earnest money deposit is a credit toward the purchase price.",
+                                },
+                                {
+                                    question: "What is a 'title search'?",
+                                    possibleAnswers: ["A search for a buyer for the property.", "A legal review of a property's history to ensure clear ownership.", "A physical inspection of the property's condition.", "A check of the buyer's credit history."],
+                                    correctAnswer: "A legal review of a property's history to ensure clear ownership.",
+                                    explanation: "A title search is a process to confirm that the person selling the property has the legal right to do so and that there are no liens or other claims against it.",
+                                },
+                            ]
+                        },
+                        {
+                            title: "Escrow and Title",
+                            questions: [
+                                {
+                                    question: "What is the purpose of an escrow account?",
+                                    possibleAnswers: ["To hold funds for future property repairs.", "To save for a down payment.", "To hold funds and documents during a real estate transaction.", "To pay the real estate agent's commission."],
+                                    correctAnswer: "To hold funds and documents during a real estate transaction.",
+                                    explanation: "An escrow account is an account held by a third party (an escrow agent) on behalf of two parties in a transaction, holding the funds and documents until all conditions are met.",
+                                },
+                            ]
+                        }
+                    ]
+                },
+                {
+                    chapter: "Investment Properties",
+                    file: "investment-properties.json",
+                    lessons: [
+                        {
+                            title: "Types of Investment",
+                            questions: [
+                                {
+                                    question: "What is the term for a property purchased with the intention of generating income through rent?",
+                                    possibleAnswers: ["Primary residence", "Second home", "Rental property", "Vacation home"],
+                                    correctAnswer: "Rental property",
+                                    explanation: "A rental property is a real estate investment where the owner leases the property to tenants to generate income.",
+                                },
+                            ]
+                        },
+                        {
+                            title: "Financial Metrics",
+                            questions: [
+                                {
+                                    question: "What does 'Cap Rate' stand for in real estate investment?",
+                                    possibleAnswers: ["Capitalization Rate", "Closing Asset Price", "Cash Asset Ratio", "Credit Application Ratio"],
+                                    correctAnswer: "Capitalization Rate",
+                                    explanation: "Capitalization Rate (Cap Rate) is a financial metric used to estimate the potential return on a real estate investment. It is the ratio of net operating income to the property's asset value.",
+                                },
+                            ]
+                        }
+                    ]
+                },
+                {
+                    chapter: "Real Estate Financing",
+                    file: "real-estate-financing.json",
+                    lessons: [
+                        {
+                            title: "Loan Types",
+                            questions: [
+                                {
+                                    question: "Which loan is backed by the U.S. government and is popular for first-time homebuyers?",
+                                    possibleAnswers: ["Conventional loan", "FHA loan", "Jumbo loan", "Bridge loan"],
+                                    correctAnswer: "FHA loan",
+                                    explanation: "An FHA loan is a mortgage issued by an FHA-approved lender and insured by the Federal Housing Administration. They are popular with first-time homebuyers due to lower down payment requirements.",
+                                },
+                            ]
+                        },
+                        {
+                            title: "Credit and Debt",
+                            questions: [
+                                {
+                                    question: "What is a 'debt-to-income' ratio (DTI)?",
+                                    possibleAnswers: ["A ratio of all your income to all your expenses.", "A ratio of your gross income to your net income.", "A ratio of your monthly debt payments to your gross monthly income.", "A ratio of your credit score to your total debt."],
+                                    correctAnswer: "A ratio of your monthly debt payments to your gross monthly income.",
+                                    explanation: "The debt-to-income (DTI) ratio is a personal finance measure that compares your total monthly debt payments to your gross monthly income. It helps lenders assess your ability to manage monthly payments.",
+                                },
+                            ]
+                        },
+                        {
+                            title: "Economic Influences",
+                            questions: [
+                                {
+                                    question: `Which of the following courses of action would the Federal Reserve Board take during an elongated period of "tight money?"`,
+                                    possibleAnswers: ["Any of the following", "Purchasing large blocks of government bonds", "Lower the reserve requirements of bank members", "Decrease the discount rate for bank members"],
+                                    correctAnswer: "Any of the following",
+                                    explanation: `Answers (a), (b), (c), and (d) are all courses of action taken by the Federal Reserve Board to help alleviate tight money conditions in the country.`,
+                                },
+                            ]
+                        }
                     ]
                 }
             ]
         };
 
-        // mortgage-fundamentals.json
-        const mortgageFundamentalsData = {
-            chapter: "Mortgage Fundamentals",
-            lessons: [
-                {
-                    title: "Mortgage Types",
-                    questions: [
-                        {
-                            question: "Which of the following is a key characteristic of a fixed-rate mortgage?",
-                            possibleAnswers: ["The interest rate can change over time.", "The interest rate remains the same for the entire loan term.", "The monthly payment fluctuates based on market conditions.", "It is only available for commercial properties."],
-                            correctAnswer: "The interest rate remains the same for the entire loan term.",
-                            explanation: "A fixed-rate mortgage is a loan where the interest rate and monthly payment remain constant throughout the entire loan term.",
-                        },
-                    ]
-                },
-                {
-                    title: "Property Ownership",
-                    questions: [
-                        {
-                            question: "What is a deed?",
-                            possibleAnswers: ["A contract for a loan.", "A legal document that transfers ownership of a property.", "A property tax bill.", "A certificate of occupancy."],
-                            correctAnswer: "A legal document that transfers ownership of a property.",
-                            explanation: "A deed is a legal instrument used to transfer title or ownership of real property from one person to another.",
-                        },
-                    ]
-                },
-                {
-                    title: "Contracts and Clauses",
-                    questions: [
-                        {
-                            question: "What is a mortgage contingency?",
-                            possibleAnswers: ["A penalty for paying off a mortgage early.", "A clause in a purchase agreement that protects the buyer if they cannot secure financing.", "An additional fee added to the mortgage interest rate.", "A type of insurance for the property owner."],
-                            correctAnswer: "A clause in a purchase agreement that protects the buyer if they cannot secure financing.",
-                            explanation: "A mortgage contingency is a clause in a sales contract that specifies the sale is dependent on the buyer getting a mortgage for the property. If the buyer can't get a mortgage, they can cancel the contract without penalty.",
-                        },
-                    ]
-                },
-                // New lesson from user's questions
-                {
-                    title: "Valuation Principles",
-                    questions: [
-                        {
-                            question: "A couple is looking at houses and turns one down because they felt the price of the home was too high. This is based on what principle of real estate?",
-                            possibleAnswers: ["Conformity", "Anticipation", "Substitution", "All of these"],
-                            correctAnswer: "Substitution",
-                            explanation: "The principle of substitution is the basis of the appraisal process. Explained simply, value is set by the cost of getting an equally desirable substitute.",
-                        },
-                    ]
-                }
-            ]
-        };
-
-        // the-closing-process.json
-        const theClosingProcessData = {
-            chapter: "The Closing Process",
-            lessons: [
-                {
-                    title: "Closing Costs",
-                    questions: [
-                        {
-                            question: "Which of the following is typically considered a closing cost?",
-                            possibleAnswers: ["Utility bills", "Property taxes", "Earnest money deposit", "Home appraisal fee"],
-                            correctAnswer: "Home appraisal fee",
-                            explanation: "Closing costs are fees associated with the purchase of a home. A home appraisal fee is a common example, while property taxes and utility bills are ongoing expenses, and an earnest money deposit is a credit toward the purchase price.",
-                        },
-                        {
-                            question: "What is a 'title search'?",
-                            possibleAnswers: ["A search for a buyer for the property.", "A legal review of a property's history to ensure clear ownership.", "A physical inspection of the property's condition.", "A check of the buyer's credit history."],
-                            correctAnswer: "A legal review of a property's history to ensure clear ownership.",
-                            explanation: "A title search is a process to confirm that the person selling the property has the legal right to do so and that there are no liens or other claims against it.",
-                        },
-                    ]
-                },
-                {
-                    title: "Escrow and Title",
-                    questions: [
-                        {
-                            question: "What is the purpose of an escrow account?",
-                            possibleAnswers: ["To hold funds for future property repairs.", "To save for a down payment.", "To hold funds and documents during a real estate transaction.", "To pay the real estate agent's commission."],
-                            correctAnswer: "To hold funds and documents during a real estate transaction.",
-                            explanation: "An escrow account is an account held by a third party (an escrow agent) on behalf of two parties in a transaction, holding the funds and documents until all conditions are met.",
-                        },
-                    ]
-                }
-            ]
-        };
-
-        // investment-properties.json
-        const investmentPropertiesData = {
-            chapter: "Investment Properties",
-            lessons: [
-                {
-                    title: "Types of Investment",
-                    questions: [
-                        {
-                            question: "What is the term for a property purchased with the intention of generating income through rent?",
-                            possibleAnswers: ["Primary residence", "Second home", "Rental property", "Vacation home"],
-                            correctAnswer: "Rental property",
-                            explanation: "A rental property is a real estate investment where the owner leases the property to tenants to generate income.",
-                        },
-                    ]
-                },
-                {
-                    title: "Financial Metrics",
-                    questions: [
-                        {
-                            question: "What does 'Cap Rate' stand for in real estate investment?",
-                            possibleAnswers: ["Capitalization Rate", "Closing Asset Price", "Cash Asset Ratio", "Credit Application Ratio"],
-                            correctAnswer: "Capitalization Rate",
-                            explanation: "Capitalization Rate (Cap Rate) is a financial metric used to estimate the potential return on a real estate investment. It is the ratio of net operating income to the property's asset value.",
-                        },
-                    ]
-                }
-            ]
-        };
-
-        // real-estate-financing.json
-        const realEstateFinancingData = {
-            chapter: "Real Estate Financing",
-            lessons: [
-                {
-                    title: "Loan Types",
-                    questions: [
-                        {
-                            question: "Which loan is backed by the U.S. government and is popular for first-time homebuyers?",
-                            possibleAnswers: ["Conventional loan", "FHA loan", "Jumbo loan", "Bridge loan"],
-                            correctAnswer: "FHA loan",
-                            explanation: "An FHA loan is a mortgage issued by an FHA-approved lender and insured by the Federal Housing Administration. They are popular with first-time homebuyers due to lower down payment requirements.",
-                        },
-                    ]
-                },
-                {
-                    title: "Credit and Debt",
-                    questions: [
-                        {
-                            question: "What is a 'debt-to-income' ratio (DTI)?",
-                            possibleAnswers: ["A ratio of all your income to all your expenses.", "A ratio of your gross income to your net income.", "A ratio of your monthly debt payments to your gross monthly income.", "A ratio of your credit score to your total debt."],
-                            correctAnswer: "A ratio of your monthly debt payments to your gross monthly income.",
-                            explanation: "The debt-to-income (DTI) ratio is a personal finance measure that compares your total monthly debt payments to your gross monthly income. It helps lenders assess your ability to manage monthly payments.",
-                        },
-                    ]
-                },
-                // New lesson from user's questions
-                {
-                    title: "Economic Influences",
-                    questions: [
-                         {
-                             question: `Which of the following courses of action would the Federal Reserve Board take during an elongated period of "tight money?"`,
-                             possibleAnswers: ["Any of the following", "Purchasing large blocks of government bonds", "Lower the reserve requirements of bank members", "Decrease the discount rate for bank members"],
-                             correctAnswer: "Any of the following",
-                             explanation: `Answers (a), (b), (c), and (d) are all courses of action taken by the Federal Reserve Board to help alleviate tight money conditions in the country.`,
-                         },
-                    ]
-                }
-            ]
-        };
-
-        // Map file names to the corresponding data objects for this example
-        const fileToDataMap = {
-            "the-basics.json": theBasicsData,
-            "mortgage-fundamentals.json": mortgageFundamentalsData,
-            "the-closing-process.json": theClosingProcessData,
-            "investment-properties.json": investmentPropertiesData,
-            "real-estate-financing.json": realEstateFinancingData
-        };
-
-        // Simulate fetching with a Promise and a delay
-        function fetchData(filename) {
-            return new Promise((resolve) => {
-                setTimeout(() => {
-                    const data = filename === "chapters.json" ? chaptersData : fileToDataMap[filename];
-                    if (data) {
-                        resolve(data);
-                    } else {
-                        throw new Error(`File not found: ${filename}`);
-                    }
-                }, 500); // Simulate a network delay
-            });
-        }
-        
         // --- Main Quiz App Logic ---
-
-        let allChapters = [];
-        let currentChapterData = null;
+        
+        // State variables to keep track of the current position in the quiz
+        let currentChapterIndex = 0;
         let currentLessonIndex = 0;
         let currentQuestionIndex = 0;
 
+        // DOM element references
         const quizContainer = document.getElementById('quiz-container');
         const chapterButtonsContainer = document.getElementById('chapter-buttons-container');
         const prevBtn = document.getElementById('prevBtn');
         const nextBtn = document.getElementById('nextBtn');
         const quizNavigation = document.getElementById('quiz-navigation');
 
+        // Modal element references
         const modal = document.getElementById('modal');
         const modalTitle = document.getElementById('modal-title');
         const modalContent = document.getElementById('modal-content');
         const modalCloseBtn = document.getElementById('modal-close');
 
-        // Function to show a custom modal
+        // Function to show a custom modal (replaces alert())
         function showModal(title, message) {
             modalTitle.textContent = title;
             modalContent.textContent = message;
             modal.classList.remove('hidden');
         }
 
-        // Function to close the modal
+        // Close modal button event listener
         modalCloseBtn.addEventListener('click', () => {
             modal.classList.add('hidden');
         });
 
-        // Function to render the questions for the current lesson
+        // Function to render the current question and its options
         function renderQuiz() {
-            if (!currentChapterData) {
+            // Check if a lesson is currently selected
+            if (currentChapterIndex === -1) {
                 quizContainer.innerHTML = `<p class="text-center text-gray-500 text-lg">Please select a lesson from the left to begin the quiz.</p>`;
+                quizNavigation.classList.add('hidden');
                 return;
             }
             
-            const currentLesson = currentChapterData.lessons[currentLessonIndex];
+            const currentChapter = quizData.chapters[currentChapterIndex];
+            const currentLesson = currentChapter.lessons[currentLessonIndex];
             const currentQuestion = currentLesson.questions[currentQuestionIndex];
 
-            // Render question and options
+            // Build the HTML for the current question
             quizContainer.innerHTML = `
                 <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
                     <p class="text-lg font-medium text-gray-700">Question ${currentQuestionIndex + 1}/${currentLesson.questions.length}:</p>
@@ -408,7 +376,7 @@
         // Function to handle answer submission
         function handleSubmit() {
             const selectedAnswer = document.querySelector('input[name="answer"]:checked')?.value;
-            const currentQuestion = currentChapterData.lessons[currentLessonIndex].questions[currentQuestionIndex];
+            const currentQuestion = quizData.chapters[currentChapterIndex].lessons[currentLessonIndex].questions[currentQuestionIndex];
             const feedbackContainer = document.getElementById('feedback-container');
 
             if (!selectedAnswer) {
@@ -440,14 +408,19 @@
             document.getElementById('submitBtn').disabled = true;
         }
 
+        // Function to handle loading a new lesson when a button is clicked
+        function handleLessonButtonClick(chapterIdx, lessonIdx) {
+            currentChapterIndex = chapterIdx;
+            currentLessonIndex = lessonIdx;
+            currentQuestionIndex = 0;
+            renderQuiz();
+        }
+
         // Function to render the sidebar navigation
-        async function renderSidebar() {
+        function renderSidebar() {
             chapterButtonsContainer.innerHTML = ''; // Clear previous buttons
             
-            // First, load the list of chapters
-            allChapters = await fetchData("chapters.json");
-
-            allChapters.forEach((chapter, chapterIdx) => {
+            quizData.chapters.forEach((chapter, chapterIdx) => {
                 const chapterDetails = document.createElement('details');
                 chapterDetails.className = `w-full bg-white rounded-lg shadow-xl p-6 transition-all duration-300 open:bg-gray-100`;
                 
@@ -464,119 +437,99 @@
                 const lessonContainer = document.createElement('div');
                 lessonContainer.className = 'space-y-2 mt-4';
                 
-                const loadingParagraph = document.createElement('p');
-                loadingParagraph.textContent = 'Select a lesson to load quiz content...';
-                loadingParagraph.className = 'text-gray-400 text-sm italic mt-2';
-                lessonContainer.appendChild(loadingParagraph);
+                // Add lesson buttons
+                chapter.lessons.forEach((lesson, lessonIdx) => {
+                    const lessonButton = document.createElement('button');
+                    lessonButton.textContent = lesson.title;
+                    lessonButton.className = `w-full text-left py-2 px-3 rounded-lg transition-all duration-200 text-wrap break-words bg-gray-200 text-gray-700 hover:bg-gray-300`;
+                    lessonButton.addEventListener('click', () => handleLessonButtonClick(chapterIdx, lessonIdx));
+                    lessonContainer.appendChild(lessonButton);
+                });
 
                 chapterDetails.appendChild(lessonContainer);
                 chapterButtonsContainer.appendChild(chapterDetails);
-                
-                // Add event listener to load lessons for this chapter
-                chapterDetails.addEventListener('toggle', async (event) => {
-                    if (event.target.open) {
-                        try {
-                            // Check if lessons are already loaded for this chapter
-                            if (chapterDetails.dataset.loaded) return;
-
-                            const loadingDiv = document.createElement('div');
-                            loadingDiv.textContent = "Loading lessons...";
-                            loadingDiv.className = "text-center text-gray-500 mt-2 animate-pulse";
-                            lessonContainer.innerHTML = '';
-                            lessonContainer.appendChild(loadingDiv);
-
-                            const chapterData = await fetchData(chapter.file);
-
-                            // Clear loading message and add lesson buttons
-                            lessonContainer.innerHTML = '';
-                            chapterData.lessons.forEach((lesson, lessonIdx) => {
-                                const lessonButton = document.createElement('button');
-                                lessonButton.textContent = lesson.title;
-                                lessonButton.dataset.chapterFile = chapter.file;
-                                lessonButton.dataset.lessonIndex = lessonIdx;
-                                lessonButton.className = `w-full text-left py-2 px-3 rounded-lg transition-all duration-200 text-wrap break-words bg-gray-200 text-gray-700 hover:bg-gray-300`;
-                                lessonContainer.appendChild(lessonButton);
-                            });
-                            chapterDetails.dataset.loaded = 'true';
-
-                        } catch (error) {
-                            showModal('Loading Error', `Failed to load quiz content: ${error.message}`);
-                            lessonContainer.innerHTML = `<p class="text-red-500 text-center mt-2">Error loading lessons.</p>`;
-                        }
-                    }
-                });
-
-                // Check if this is the currently active chapter, and open it
-                if (currentChapterData && chapter.chapter === currentChapterData.chapter) {
-                    chapterDetails.open = true;
-                    // Manually trigger the load if it's the current chapter
-                    const loadEvent = new Event('toggle');
-                    chapterDetails.dispatchEvent(loadEvent);
-                }
             });
         }
         
         // Function to update the state of navigation buttons
         function updateNavButtons() {
-            if (!currentChapterData) {
+            if (currentChapterIndex === -1) {
                 prevBtn.disabled = true;
                 nextBtn.disabled = true;
                 return;
             }
-            const currentLesson = currentChapterData.lessons[currentLessonIndex];
-            prevBtn.disabled = currentQuestionIndex === 0;
-            nextBtn.disabled = currentQuestionIndex === currentLesson.questions.length - 1;
+
+            const currentChapter = quizData.chapters[currentChapterIndex];
+            const currentLesson = currentChapter.lessons[currentLessonIndex];
+            
+            // Check if this is the very first question of the very first lesson
+            const isFirstQuestion = currentChapterIndex === 0 && currentLessonIndex === 0 && currentQuestionIndex === 0;
+            // Check if this is the very last question of the very last lesson
+            const isLastQuestion = currentChapterIndex === quizData.chapters.length - 1 && currentLessonIndex === currentChapter.lessons.length - 1 && currentQuestionIndex === currentLesson.questions.length - 1;
+
+            prevBtn.disabled = isFirstQuestion;
+            nextBtn.disabled = isLastQuestion;
         }
 
-        // Event listeners for navigation buttons
+        // Event listener for the "Next" button
         nextBtn.addEventListener('click', () => {
-            if (currentChapterData) {
-                const currentLesson = currentChapterData.lessons[currentLessonIndex];
-                if (currentQuestionIndex < currentLesson.questions.length - 1) {
-                    currentQuestionIndex++;
-                    renderQuiz();
-                }
-            }
-        });
+            const currentChapter = quizData.chapters[currentChapterIndex];
+            const currentLesson = currentChapter.lessons[currentLessonIndex];
 
-        prevBtn.addEventListener('click', () => {
-            if (currentChapterData && currentQuestionIndex > 0) {
-                currentQuestionIndex--;
+            // If there's a next question in the current lesson, go to it
+            if (currentQuestionIndex < currentLesson.questions.length - 1) {
+                currentQuestionIndex++;
+                renderQuiz();
+            }
+            // If it's the last question of the current lesson, check for a next lesson
+            else if (currentLessonIndex < currentChapter.lessons.length - 1) {
+                currentLessonIndex++;
+                currentQuestionIndex = 0;
+                renderQuiz();
+            }
+            // If it's the last question of the last lesson in the current chapter, check for a next chapter
+            else if (currentChapterIndex < quizData.chapters.length - 1) {
+                currentChapterIndex++;
+                currentLessonIndex = 0;
+                currentQuestionIndex = 0;
                 renderQuiz();
             }
         });
 
-        // Event listener for the chapter/lesson buttons using event delegation
-        chapterButtonsContainer.addEventListener('click', async (event) => {
-            const button = event.target.closest('button');
-            if (button && button.dataset.chapterFile && button.dataset.lessonIndex) {
-                const chapterFile = button.dataset.chapterFile;
-                currentLessonIndex = parseInt(button.dataset.lessonIndex, 10);
-                currentQuestionIndex = 0; // Reset question index when a new lesson is selected
-                
-                try {
-                    // Fetch the chapter data from its file
-                    currentChapterData = await fetchData(chapterFile);
-                    renderQuiz();
-                    
-                    // Update active button classes
-                    document.querySelectorAll('#chapter-buttons-container button').forEach(btn => {
-                        btn.classList.remove('bg-blue-600', 'text-white', 'font-semibold', 'shadow-md');
-                        btn.classList.add('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300');
-                    });
-                    button.classList.remove('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300');
-                    button.classList.add('bg-blue-600', 'text-white', 'font-semibold', 'shadow-md');
-
-                } catch (error) {
-                    showModal('Loading Error', `Failed to load quiz content: ${error.message}`);
-                }
+        // Event listener for the "Previous" button
+        prevBtn.addEventListener('click', () => {
+            const currentChapter = quizData.chapters[currentChapterIndex];
+            
+            // If there's a previous question in the current lesson, go to it
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                renderQuiz();
+            }
+            // If it's the first question of the current lesson, check for a previous lesson
+            else if (currentLessonIndex > 0) {
+                currentLessonIndex--;
+                // Go to the last question of the previous lesson
+                currentQuestionIndex = currentChapter.lessons[currentLessonIndex].questions.length - 1;
+                renderQuiz();
+            }
+            // If it's the first question of the first lesson in the current chapter, check for a previous chapter
+            else if (currentChapterIndex > 0) {
+                currentChapterIndex--;
+                const prevChapter = quizData.chapters[currentChapterIndex];
+                currentLessonIndex = prevChapter.lessons.length - 1;
+                currentQuestionIndex = prevChapter.lessons[currentLessonIndex].questions.length - 1;
+                renderQuiz();
             }
         });
 
-        // Initial render when the page loads
+        // Initial render on page load
         document.addEventListener('DOMContentLoaded', () => {
             renderSidebar();
+            // Initially, there is no selected lesson, so hide navigation
+            currentChapterIndex = -1; 
+            quizNavigation.classList.add('hidden');
         });
+
     </script>
 </body>
 </html>
