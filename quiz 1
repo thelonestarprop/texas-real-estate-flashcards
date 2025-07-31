@@ -1,121 +1,456 @@
-[
-                        {
-                            title: "Amortization and Terminology",
-                            questions: [
-                               
-                                {
-  "question": "Which of these is considered to be an encumbrance?",
-  "possibleAnswers": ["A lease", "A mortgage", "All of these", "An easement"],
-  "correctAnswer": "All of these",
-  "explanation": "A lease, mortgage, easement, or restriction is considered an encumbrance of a fee simple title."
-},
-                                {
-  "question": "Which of the following courses of action would the Federal Reserve Board take during an elongated period of \"tight money?\"",
-  "possibleAnswers": [
-    "Any of the following",
-    "Purchasing large blocks of government bonds",
-    "Lower the reserve requirements of bank members",
-    "Decrease the discount rate for bank members"
-  ],
-  "correctAnswer": "Any of the following",
-  "explanation": "Answers (a), (b), (c), and (d) are all courses of action taken by the Federal Reserve Board to help alleviate tight money conditions in the country."
-},
-                                {
-  "question": "A broker acting as agent for a principal has as much authority as:",
-  "possibleAnswers": [
-    "other parties believe the agent to possess.",
-    "the agent chooses to accept.",
-    "the principal actually or ostensibly confers upon him.",
-    "he chooses to accept as limited by the Statute of Limitations."
-  ],
-  "correctAnswer": "the principal actually or ostensibly confers upon him.",
-  "explanation": "An agent has as much authority as his principal actually or ostensibly confers upon him."
-},
-                                {
-  "question": "What does a general warranty deed contain?",
-  "possibleAnswers": [
-    "None of these.",
-    "Covenants regarding quiet enjoyment",
-    "Covenants that warrant the new owner’s undisturbed and clear title",
-    "Covenants that include provisions of a quitclaim deed"
-  ],
-  "correctAnswer": "Covenants that warrant the new owner’s undisturbed and clear title",
-  "explanation": "Covenants that warrant the new owner’s undisturbed and clear title are contained in a general warranty deed."
-},
-{
-  "question": "In Texas, if Heather is an agent for a buyer Harry and she shows him a property that is known to have ghosts living there according to the neighbors, but she does not inform Harry of this information, after Harry purchases the property, Heather would:",
-  "possibleAnswers": [
-    "Be considered to have misrepresented Harry",
-    "Be liable for misrepresentation",
-    "Be open to being sued by Harry if he finds out about the ghosts",
-    "Not be liable for the nondisclosure of ghosts"
-  ],
-  "correctAnswer": "Not be liable for the nondisclosure of ghosts",
-  "explanation": "In Texas, agents are absolved from any liability regarding nondisclosure of stigmatized properties."
-},                                
-           {
-  "question": "A couple is looking at houses and turns one down because they felt the price of the home was too high. This is based on what principle of real estate?",
-  "possibleAnswers": ["Conformity", "Anticipation", "Substitution", "All of these"],
-  "correctAnswer": "Substitution",
-  "explanation": "The principle of substitution is the basis of the appraisal process. Explained simply, value is set by the cost of getting an equally desirable substitute."
-},     
-                                {
-  "question": "Constructive eviction may allow for a tenant to vacate the premises before the expiration of a lease term. Which would be an example of this?",
-  "possibleAnswers": [
-    "Landlord has shown property to prospective tenant and is negotiating terms",
-    "Property cannot be used for original purpose due to unnecessary and considerable changes made by landlord",
-    "Landlord fails to make necessary repairs",
-    "All of the above"
-  ],
-  "correctAnswer": "All of the above",
-  "explanation": "All of the above are examples of constructive eviction. a) Landlord has shown property to prospective tenant and is negotiating terms b) Property cannot be used for original purpose due to unnecessary and considerable changes made by landlord c) Landlord fails to make necessary repairs"
-},
-            {
-  "question": "\"A\" receives a life estate for the life of \"X.\" \"A\" dies before \"X.\" The estate:",
-  "possibleAnswers": [
-    "ceases to exist.",
-    "reverts to the original grantor.",
-    "vests in",
-    "vests in the heirs of"
-  ],
-  "correctAnswer": "vests in the heirs of",
-  "explanation": "The estate vests in the heirs of \"A\" until \"X\" dies at which time the estate will revert to the original grantor."
-},
-                                {
-  "question": "The original amortization term minus the number of payments that have been applied refers to the:",
-  "possibleAnswers": [
-    "Remaining interest",
-    "Remaining term",
-    "Total amortization term",
-    "Loan amount"
-  ],
-  "correctAnswer": "Remaining term",
-  "explanation": "The original amortization term minus the number of payments that have been applied refers to the remaining term."
-},
-                                {
-  "question": "If Franklin, a real estate agent, intentionally speaks very highly and enthusiastically about a property he is trying to sell to a client in order to secure the deal, this type of behavior would be:",
-  "possibleAnswers": ["Puffing", "Steering", "Illegal", "Misrepresentation"],
-  "correctAnswer": "Puffing",
-  "explanation": "The term “puffing” can be used to describe “sales talk” that is used to secure a deal. As long as there is no misrepresentation, it is considered a legal practice."
-},
-<!-- NEXT 3 QUESTOINS FOLLOWING QUESTIONS ARE GENERATED BY GEMINI -->
-                                {
-                                    question: "The original amortization term minus the number of payments that have been applied refers to the:",
-                                    possibleAnswers: ["Remaining interest", "Remaining term", "Total amortization term", "Loan amount"],
-                                    correctAnswer: "Remaining term",
-                                    explanation: "The remaining term is the duration of a loan left after a certain number of payments have been made."
-                                },
-                                {
-                                    question: "What is an appraisal?",
-                                    possibleAnswers: ["A tax assessment of a property's value.", "An estimate of a property's value by a professional appraiser.", "A final offer price from a buyer.", "A legally binding contract of sale."],
-                                    correctAnswer: "An estimate of a property's value by a professional appraiser.",
-                                    explanation: "An appraisal is a professional and unbiased opinion of a home's value based on a variety of factors, including its condition, location, and recent sales of comparable properties."
-                                },
-                                {
-                                    question: "What is the process of paying off a debt in regular installments over a period of time?",
-                                    possibleAnswers: ["Foreclosure", "Refinancing", "Amortization", "Escrow"],
-                                    correctAnswer: "Amortization",
-                                    explanation: "Amortization is the process of paying off a debt with a fixed repayment schedule in regular installments over a period of time, such as with a mortgage."
-                                }
-                            ]
-                        },
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz App</title>
+    <!-- Tailwind CSS CDN for easy styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom styling for the details/summary elements to make them look like cards */
+        details[open] summary ~ * {
+            animation: sweep .3s ease-in-out;
+        }
+        @keyframes sweep {
+            0% { opacity: 0; margin-left: -10px; }
+            100% { opacity: 1; margin-left: 0px; }
+        }
+        /* Rotates the chevron when the details element is open */
+        details[open] summary .chevron-icon {
+            transform: rotate(180deg);
+        }
+        /* Custom style for the active lesson button */
+        .active-lesson-button {
+            background-color: #3b82f6; /* bg-blue-500 */
+            color: white;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="bg-blue-50 flex items-center justify-center min-h-screen p-4">
+
+    <!-- Main container for the layout -->
+    <div class="flex flex-col md:flex-row gap-6 max-w-6xl w-full">
+
+        <!-- Left Sidebar for Search, Chapter and Lesson Buttons -->
+        <div class="w-full md:w-1/4 space-y-4">
+            <!-- Search Input Field -->
+            <div class="bg-white rounded-lg shadow-xl p-4 sticky top-4 z-10">
+                <label for="search-input" class="block text-sm font-medium text-gray-700 mb-2">Search Questions & Answers</label>
+                <input type="text" id="search-input" placeholder="e.g., 'amortization' or 'deed'" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+            </div>
+            
+            <div id="chapter-buttons-container" class="space-y-4">
+                <p id="loading-text" class="text-center text-gray-500">Loading chapters...</p>
+            </div>
+        </div>
+
+        <!-- Right side: Main content area for the quiz -->
+        <div class="flex-1 bg-white rounded-lg shadow-xl p-8 md:p-12 space-y-8">
+
+            <!-- Header -->
+            <h1 id="main-quiz-title" class="text-3xl font-bold text-center text-gray-800">Quiz</h1>
+            
+            <!-- Quiz content will be dynamically inserted here -->
+            <div id="quiz-container" class="space-y-6">
+                <p id="initial-message" class="text-center text-gray-500 text-lg">Please select a lesson from the left to begin the quiz.</p>
+            </div>
+
+            <!-- Navigation buttons -->
+            <div id="quiz-navigation" class="flex justify-between items-center mt-8 pt-6 border-t border-gray-200 hidden">
+                <button id="prevBtn" class="bg-gray-300 text-gray-800 font-semibold py-3 px-6 rounded-lg transition-all duration-300 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                    &laquo; Previous
+                </button>
+                <button id="nextBtn" class="bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition-all duration-300 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                    Next &raquo;
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Modal for Alerts/Feedback -->
+    <div id="modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+      <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3 text-center">
+          <h3 id="modal-title" class="text-lg leading-6 font-medium text-gray-900"></h3>
+          <div class="mt-2 px-7 py-3">
+            <p id="modal-content" class="text-sm text-gray-500"></p>
+          </div>
+          <div class="items-center px-4 py-3">
+            <button id="modal-close" class="px-4 py-2 bg-blue-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">OK</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+        // --- Centralized Quiz Data (This will be populated asynchronously) ---
+        let quizData = null;
+
+        // --- DOM Elements ---
+        const chapterContainer = document.getElementById('chapter-buttons-container');
+        const quizContainer = document.getElementById('quiz-container');
+        const searchInput = document.getElementById('search-input');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const quizNavigation = document.getElementById('quiz-navigation');
+        const loadingText = document.getElementById('loading-text');
+
+        // --- Global State Variables ---
+        let currentLessonQuestions = [];
+        let currentQuestionIndex = 0;
+        let selectedLessonTitle = null;
+
+        // --- Event Listeners ---
+        // We call the async initQuiz function to start the data fetching process.
+        document.addEventListener('DOMContentLoaded', initQuiz);
+        nextBtn.addEventListener('click', showNextQuestion);
+        prevBtn.addEventListener('click', showPreviousQuestion);
+        searchInput.addEventListener('input', filterLessons);
+
+        // --- Functions ---
+        
+        /**
+         * Initializes the quiz app by fetching and parsing the JSON data.
+         * This function is asynchronous as it uses the `fetch` API.
+         */
+        async function initQuiz() {
+            // Define the paths to your JSON files
+            const filePaths = ['Quiz 1.json', 'Quiz 2.json', 'Quiz 3.json'];
+
+            try {
+                // Use Promise.all to fetch all JSON files concurrently
+                const responses = await Promise.all(filePaths.map(path => fetch(path)));
+                
+                // Check if any fetch failed
+                for (const response of responses) {
+                    if (!response.ok) {
+                        throw new Error(`Failed to load ${response.url}: ${response.statusText}`);
+                    }
+                }
+
+                // Parse the JSON data from each response
+                const allQuestions = await Promise.all(responses.map(res => res.json()));
+
+                // Combine the data into the structure expected by the app.
+                // We'll create a chapter for each JSON file.
+                quizData = {
+                    chapters: allQuestions.map((questions, index) => ({
+                        chapter: `Chapter ${index + 1}`,
+                        lessons: [{
+                            title: `Quiz ${index + 1}`,
+                            questions: questions
+                        }]
+                    }))
+                };
+                
+                // Once data is loaded, remove the loading message and display the chapters.
+                loadingText.remove();
+                displayChapters(quizData.chapters);
+
+            } catch (error) {
+                console.error('Failed to load quiz data:', error);
+                // Show a modal error message to the user
+                showModal('Error', `Could not load quiz data. Please ensure the files exist: ${error.message}`, 'bg-red-500');
+                loadingText.textContent = 'Failed to load quiz data.';
+            }
+        }
+
+        /**
+         * Displays the quiz questions and answers for a given lesson.
+         * @param {string} lessonTitle - The title of the lesson to load.
+         */
+        function loadQuiz(lessonTitle) {
+            // Find the lesson and its questions from the quizData
+            const lesson = quizData.chapters.flatMap(c => c.lessons).find(l => l.title === lessonTitle);
+            if (!lesson) {
+                console.error('Lesson not found:', lessonTitle);
+                return;
+            }
+            
+            selectedLessonTitle = lessonTitle;
+            currentLessonQuestions = lesson.questions;
+            currentQuestionIndex = 0;
+            quizContainer.innerHTML = '';
+            quizNavigation.classList.remove('hidden');
+            
+            showQuestion(currentQuestionIndex);
+            updateNavigationButtons();
+            
+            // Show a greeting message
+            const greeting = document.createElement('h2');
+            greeting.className = 'text-2xl font-semibold mb-4 text-gray-700 text-center';
+            greeting.textContent = lessonTitle;
+            quizContainer.prepend(greeting);
+        }
+
+        /**
+         * Displays a specific question based on the index.
+         * @param {number} index - The index of the question to display.
+         */
+        function showQuestion(index) {
+            if (index < 0 || index >= currentLessonQuestions.length) {
+                return;
+            }
+            
+            quizContainer.innerHTML = '';
+            const questionData = currentLessonQuestions[index];
+
+            // Question card container
+            const card = document.createElement('div');
+            card.className = 'bg-gray-50 rounded-lg p-6 shadow-md border border-gray-200';
+
+            // Question number and text
+            const questionNumber = document.createElement('p');
+            questionNumber.className = 'text-sm text-blue-600 font-bold mb-1';
+            questionNumber.textContent = `Question ${index + 1} of ${currentLessonQuestions.length}`;
+            card.appendChild(questionNumber);
+            
+            const questionText = document.createElement('p');
+            questionText.className = 'text-xl font-medium text-gray-800 mb-6';
+            questionText.textContent = questionData.question;
+            card.appendChild(questionText);
+
+            // Answer options container
+            const answersContainer = document.createElement('div');
+            answersContainer.className = 'space-y-4';
+
+            questionData.possibleAnswers.forEach(answer => {
+                const answerButton = document.createElement('button');
+                answerButton.className = 'w-full text-left p-4 rounded-lg border border-gray-300 transition-colors duration-200 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-75 disabled:cursor-not-allowed';
+                answerButton.textContent = answer;
+                answerButton.dataset.answer = answer;
+                answerButton.addEventListener('click', (event) => selectAnswer(event, questionData.correctAnswer, questionData.explanation));
+                answersContainer.appendChild(answerButton);
+            });
+            
+            card.appendChild(answersContainer);
+            quizContainer.appendChild(card);
+            
+            // Hide the next button until an answer is selected
+            nextBtn.disabled = true;
+        }
+
+        /**
+         * Handles the user's answer selection, provides feedback, and enables the next button.
+         * @param {Event} event - The click event from the answer button.
+         * @param {string} correctAnswer - The correct answer string.
+         * @param {string} explanation - The explanation for the correct answer.
+         */
+        function selectAnswer(event, correctAnswer, explanation) {
+            const selectedButton = event.target;
+            const allButtons = quizContainer.querySelectorAll('button[data-answer]');
+            const selectedAnswer = selectedButton.dataset.answer;
+
+            // Check if an answer has already been selected
+            if (selectedButton.disabled) {
+                return;
+            }
+
+            // Disable all answer buttons after selection
+            allButtons.forEach(btn => btn.disabled = true);
+
+            // Provide visual feedback
+            if (selectedAnswer === correctAnswer) {
+                selectedButton.classList.add('bg-green-100', 'border-green-500');
+                showModal('Correct!', explanation, 'bg-green-500');
+            } else {
+                selectedButton.classList.add('bg-red-100', 'border-red-500');
+                
+                // Highlight the correct answer
+                allButtons.forEach(btn => {
+                    if (btn.dataset.answer === correctAnswer) {
+                        btn.classList.add('bg-green-100', 'border-green-500');
+                    }
+                });
+                
+                showModal('Incorrect.', `The correct answer was: ${correctAnswer}.<br><br>${explanation}`, 'bg-red-500');
+            }
+            
+            // Enable the next button to allow the user to advance
+            nextBtn.disabled = false;
+        }
+
+        /**
+         * Navigates to the next question.
+         */
+        function showNextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < currentLessonQuestions.length) {
+                showQuestion(currentQuestionIndex);
+                updateNavigationButtons();
+            } else {
+                // Quiz completed for this lesson
+                quizContainer.innerHTML = `
+                    <div class="text-center p-8 bg-green-50 rounded-lg shadow-md">
+                        <h2 class="text-3xl font-bold text-green-700 mb-4">Quiz Complete!</h2>
+                        <p class="text-lg text-gray-600">You have finished the lesson on "${selectedLessonTitle}".</p>
+                    </div>
+                `;
+                quizNavigation.classList.add('hidden');
+                updateNavigationButtons();
+            }
+        }
+
+        /**
+         * Navigates to the previous question.
+         */
+        function showPreviousQuestion() {
+            currentQuestionIndex--;
+            if (currentQuestionIndex >= 0) {
+                showQuestion(currentQuestionIndex);
+                updateNavigationButtons();
+            }
+        }
+
+        /**
+         * Updates the state of the navigation buttons (Previous/Next).
+         */
+        function updateNavigationButtons() {
+            prevBtn.disabled = currentQuestionIndex === 0;
+            if (currentLessonQuestions) {
+              nextBtn.disabled = currentQuestionIndex >= currentLessonQuestions.length - 1;
+            }
+            
+            // If quiz is over, hide both
+            if (currentLessonQuestions && currentQuestionIndex >= currentLessonQuestions.length) {
+                quizNavigation.classList.add('hidden');
+            } else {
+                quizNavigation.classList.remove('hidden');
+            }
+        }
+        
+        /**
+         * Displays a modal with a title, content, and a custom button color.
+         * @param {string} title - The title of the modal.
+         * @param {string} content - The content/message of the modal.
+         * @param {string} buttonColorClass - Tailwind class for the button color.
+         */
+        function showModal(title, content, buttonColorClass) {
+            const modal = document.getElementById('modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalContent = document.getElementById('modal-content');
+            const modalCloseButton = document.getElementById('modal-close');
+
+            modalTitle.textContent = title;
+            modalContent.innerHTML = content;
+            modalCloseButton.className = `px-4 py-2 text-white text-base font-medium rounded-md w-full shadow-sm hover:opacity-80 transition-opacity duration-200 focus:outline-none focus:ring-2 ${buttonColorClass} focus:ring-offset-2`;
+            
+            modal.classList.remove('hidden');
+
+            modalCloseButton.onclick = () => {
+                modal.classList.add('hidden');
+            };
+
+            // Close modal if user clicks outside
+            modal.onclick = (e) => {
+                if (e.target === modal) {
+                    modal.classList.add('hidden');
+                }
+            };
+        }
+
+        /**
+         * Dynamically generates the chapter and lesson buttons in the left sidebar.
+         * @param {Array} chapters - The array of chapter objects.
+         */
+        function displayChapters(chapters) {
+            chapterContainer.innerHTML = ''; // Clear previous content
+            chapters.forEach(chapter => {
+                // Chapter Details/Summary element
+                const details = document.createElement('details');
+                details.className = 'group';
+
+                const summary = document.createElement('summary');
+                summary.className = 'flex justify-between items-center bg-gray-100 p-4 rounded-lg shadow-md cursor-pointer list-none transition-colors duration-200 hover:bg-gray-200';
+                summary.innerHTML = `
+                    <span class="font-bold text-gray-800">${chapter.chapter}</span>
+                    <svg class="chevron-icon w-6 h-6 text-gray-500 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                `;
+                
+                details.appendChild(summary);
+
+                // Lesson buttons container
+                const lessonsDiv = document.createElement('div');
+                lessonsDiv.className = 'mt-2 space-y-2 pl-4 border-l-2 border-gray-200';
+                
+                chapter.lessons.forEach(lesson => {
+                    const lessonBtn = document.createElement('button');
+                    lessonBtn.className = 'lesson-button w-full text-left p-3 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-gray-700 bg-white hover:bg-blue-100';
+                    lessonBtn.textContent = lesson.title;
+                    lessonBtn.onclick = () => {
+                        loadQuiz(lesson.title);
+                        setActiveLessonButton(lessonBtn);
+                    };
+                    lessonsDiv.appendChild(lessonBtn);
+                });
+                
+                details.appendChild(lessonsDiv);
+                chapterContainer.appendChild(details);
+            });
+        }
+        
+        /**
+         * Sets the active state for a lesson button, de-activating all others.
+         * @param {HTMLElement} activeButton - The button element to set as active.
+         */
+        function setActiveLessonButton(activeButton) {
+            // Remove the active class from all other buttons
+            document.querySelectorAll('.lesson-button').forEach(btn => {
+                btn.classList.remove('active-lesson-button');
+                btn.classList.add('bg-white', 'text-gray-700');
+            });
+            
+            // Add the active class to the clicked button
+            activeButton.classList.add('active-lesson-button');
+            activeButton.classList.remove('bg-white', 'text-gray-700', 'hover:bg-blue-100');
+        }
+
+        /**
+         * Filters lessons based on search input value.
+         */
+        function filterLessons() {
+            if (!quizData) return; // Wait for data to load
+            
+            const searchTerm = searchInput.value.toLowerCase();
+            const allLessons = document.querySelectorAll('.lesson-button');
+
+            allLessons.forEach(lessonButton => {
+                const lessonTitle = lessonButton.textContent.toLowerCase();
+                const parentDetails = lessonButton.closest('details');
+
+                if (lessonTitle.includes(searchTerm)) {
+                    // Show the lesson and its parent chapter
+                    lessonButton.style.display = 'block';
+                    if (parentDetails) {
+                        parentDetails.style.display = 'block';
+                        parentDetails.open = true; // Open the details element to show the lesson
+                    }
+                } else {
+                    // Hide the lesson if it doesn't match
+                    lessonButton.style.display = 'none';
+                }
+            });
+
+            // After filtering, check if a chapter has any visible lessons, if not, hide the chapter
+            const allDetails = document.querySelectorAll('#chapter-buttons-container details');
+            allDetails.forEach(detailsElement => {
+                const visibleLessons = detailsElement.querySelectorAll('.lesson-button:not([style*="display: none"])');
+                if (visibleLessons.length === 0) {
+                    detailsElement.style.display = 'none';
+                } else {
+                    detailsElement.style.display = 'block';
+                }
+            });
+        }
+    </script>
+</body>
+</html>
