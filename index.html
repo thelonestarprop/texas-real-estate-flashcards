@@ -38,9 +38,17 @@
     <!-- Main container for the layout -->
     <div class="flex flex-col md:flex-row gap-6 max-w-6xl w-full">
 
-        <!-- Left Sidebar for Chapter and Lesson Buttons -->
-        <div id="chapter-buttons-container" class="w-full md:w-1/4 space-y-4">
-            <p class="text-center text-gray-500">Loading chapters...</p>
+        <!-- Left Sidebar for Search, Chapter and Lesson Buttons -->
+        <div class="w-full md:w-1/4 space-y-4">
+            <!-- Search Input Field -->
+            <div class="bg-white rounded-lg shadow-xl p-4">
+                <label for="search-input" class="block text-sm font-medium text-gray-700 mb-2">Search Questions & Answers</label>
+                <input type="text" id="search-input" placeholder="e.g., 'amortization' or 'deed'" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+            </div>
+            
+            <div id="chapter-buttons-container" class="space-y-4">
+                <p class="text-center text-gray-500">Loading chapters...</p>
+            </div>
         </div>
 
         <!-- Right side: Main content area for the quiz -->
@@ -314,6 +322,7 @@
         let currentLessonIndex = -1; // -1 indicates no lesson is selected
         let currentQuestionIndex = 0;
         let isAnswerSubmitted = false; // New state variable to control 'Next' button
+        let isSearchMode = false; // New state variable for search mode
 
         // DOM element references
         const quizContainer = document.getElementById('quiz-container');
@@ -321,6 +330,7 @@
         const prevBtn = document.getElementById('prevBtn');
         const nextBtn = document.getElementById('nextBtn');
         const quizNavigation = document.getElementById('quiz-navigation');
+        const searchInput = document.getElementById('search-input');
 
         // Modal element references
         const modal = document.getElementById('modal');
@@ -431,10 +441,11 @@
             currentChapterIndex = chapterIdx;
             currentLessonIndex = lessonIdx;
             currentQuestionIndex = 0;
+            isSearchMode = false;
             updateUI();
         }
         
-        // Function to render the sidebar navigation
+        // Function to render the sidebar navigation with full chapters
         function renderSidebar() {
             chapterButtonsContainer.innerHTML = ''; // Clear previous buttons
 
@@ -480,6 +491,82 @@
             });
         }
         
+        // New function to render search results
+        function renderSearchResults(results) {
+            chapterButtonsContainer.innerHTML = '';
+            if (results.length === 0) {
+                chapterButtonsContainer.innerHTML = `<p class="text-center text-gray-500 text-md p-4">No results found.</p>`;
+                return;
+            }
+
+            results.forEach(result => {
+                const resultDetails = document.createElement('details');
+                resultDetails.className = `w-full bg-white rounded-lg shadow-xl p-4 transition-all duration-300`;
+
+                const resultSummary = document.createElement('summary');
+                resultSummary.className = 'list-none text-md font-semibold text-gray-800 cursor-pointer flex items-center justify-between hover:text-blue-600 transition-colors duration-200';
+                resultSummary.innerHTML = `
+                    <span>${result.question}</span>
+                    <svg class="chevron-icon w-5 h-5 text-gray-500 transform transition-transform duration-300" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                `;
+                resultDetails.appendChild(resultSummary);
+
+                const resultContent = document.createElement('div');
+                resultContent.className = 'space-y-2 mt-4 text-sm';
+                resultContent.innerHTML = `
+                    <p class="font-bold text-gray-700">Correct Answer:</p>
+                    <p class="text-green-700 font-semibold">${result.correctAnswer}</p>
+                    ${result.explanation ? `<p class="font-bold text-gray-700 mt-3">Explanation:</p><p class="text-gray-600">${result.explanation}</p>` : ''}
+                `;
+                resultDetails.appendChild(resultContent);
+
+                chapterButtonsContainer.appendChild(resultDetails);
+            });
+        }
+
+        // Event listener for the search input
+        searchInput.addEventListener('input', (event) => {
+            const searchTerm = event.target.value.toLowerCase().trim();
+            if (searchTerm.length > 0) {
+                isSearchMode = true;
+                currentChapterIndex = -1;
+                currentLessonIndex = -1;
+                quizContainer.innerHTML = `<p class="text-center text-gray-500 text-lg">Showing search results. Select a lesson to start a quiz.</p>`;
+                quizNavigation.classList.add('hidden');
+                
+                // Flatten the quiz data to search all questions
+                let allQuestions = [];
+                quizData.chapters.forEach(chapter => {
+                    chapter.lessons.forEach(lesson => {
+                        allQuestions.push(...lesson.questions);
+                    });
+                });
+
+                // Filter the questions based on the search term
+                const searchResults = allQuestions.filter(question => {
+                    const questionText = question.question.toLowerCase();
+                    const correctAnswerText = question.correctAnswer.toLowerCase();
+                    const possibleAnswersText = question.possibleAnswers.map(ans => ans.toLowerCase()).join(' ');
+                    const explanationText = question.explanation ? question.explanation.toLowerCase() : '';
+                    
+                    return questionText.includes(searchTerm) || 
+                           correctAnswerText.includes(searchTerm) || 
+                           possibleAnswersText.includes(searchTerm) || 
+                           explanationText.includes(searchTerm);
+                });
+
+                renderSearchResults(searchResults);
+            } else {
+                isSearchMode = false;
+                renderSidebar();
+                quizContainer.innerHTML = `<p class="text-center text-gray-500 text-lg">Please select a lesson from the left to begin the quiz.</p>`;
+                quizNavigation.classList.add('hidden');
+            }
+        });
+
+
         // Function to update the state of navigation buttons
         function updateNavButtons() {
             if (currentChapterIndex === -1) {
@@ -510,79 +597,63 @@
 
             const currentChapter = quizData.chapters[currentChapterIndex];
             const currentLesson = currentChapter.lessons[currentLessonIndex];
-            const totalQuestionsInLesson = currentLesson.questions.length;
-            const totalLessonsInChapter = currentChapter.lessons.length;
-            const totalChapters = quizData.chapters.length;
 
-            // If there's a next question in the current lesson, go to it
-            if (currentQuestionIndex < totalQuestionsInLesson - 1) {
+            // Check if there is a next question in the current lesson
+            if (currentQuestionIndex < currentLesson.questions.length - 1) {
                 currentQuestionIndex++;
-                renderQuiz();
+            } else if (currentLessonIndex < currentChapter.lessons.length - 1) {
+                // Move to the next lesson
+                currentLessonIndex++;
+                currentQuestionIndex = 0;
+            } else if (currentChapterIndex < quizData.chapters.length - 1) {
+                // Move to the next chapter's first lesson
+                currentChapterIndex++;
+                currentLessonIndex = 0;
+                currentQuestionIndex = 0;
             } else {
-                // We are on the last question of the current lesson.
-                // Check if there is a next lesson in the current chapter
-                if (currentLessonIndex < totalLessonsInChapter - 1) {
-                    currentLessonIndex++;
-                    currentQuestionIndex = 0;
-                    renderQuiz();
-                } else {
-                    // We are on the last lesson of the current chapter.
-                    // Check if there is a next chapter
-                    if (currentChapterIndex < totalChapters - 1) {
-                        currentChapterIndex++;
-                        currentLessonIndex = 0;
-                        currentQuestionIndex = 0;
-                        renderQuiz();
-                    } else {
-                        // We are at the end of the entire quiz.
-                        showModal('Quiz Complete!', 'You have finished all the lessons. Congratulations!');
-                        updateNavButtons();
-                    }
-                }
+                // End of quiz
+                showModal('Congratulations!', 'You have completed all the quiz questions!');
+                return;
             }
+            
+            updateUI();
         });
 
         // Event listener for the "Previous" button
         prevBtn.addEventListener('click', () => {
-            const currentChapter = quizData.chapters[currentChapterIndex];
-            const currentLesson = currentChapter.lessons[currentLessonIndex];
-            
-            // If there's a previous question in the current lesson, go to it
+            // Check if there is a previous question in the current lesson
             if (currentQuestionIndex > 0) {
                 currentQuestionIndex--;
-                renderQuiz();
+            } else if (currentLessonIndex > 0) {
+                // Move to the previous lesson's last question
+                currentLessonIndex--;
+                currentQuestionIndex = quizData.chapters[currentChapterIndex].lessons[currentLessonIndex].questions.length - 1;
+            } else if (currentChapterIndex > 0) {
+                // Move to the previous chapter's last lesson's last question
+                currentChapterIndex--;
+                currentLessonIndex = quizData.chapters[currentChapterIndex].lessons.length - 1;
+                currentQuestionIndex = quizData.chapters[currentChapterIndex].lessons[currentLessonIndex].questions.length - 1;
             } else {
-                // We are on the first question of the current lesson.
-                // Check if there is a previous lesson in the current chapter
-                if (currentLessonIndex > 0) {
-                    currentLessonIndex--;
-                    const prevLesson = currentChapter.lessons[currentLessonIndex];
-                    currentQuestionIndex = prevLesson.questions.length - 1; // Go to the last question of the previous lesson
-                    renderQuiz();
-                } else {
-                    // We are on the first lesson of the current chapter.
-                    // Check if there is a previous chapter
-                    if (currentChapterIndex > 0) {
-                        currentChapterIndex--;
-                        const prevChapter = quizData.chapters[currentChapterIndex];
-                        currentLessonIndex = prevChapter.lessons.length - 1; // Go to the last lesson of the previous chapter
-                        const prevLesson = prevChapter.lessons[currentLessonIndex];
-                        currentQuestionIndex = prevLesson.questions.length - 1;
-                        renderQuiz();
-                    }
-                }
+                // Already at the very first question, nothing to do
+                return;
             }
+
+            updateUI();
         });
         
-        // Initial setup function to render both the sidebar and the quiz area
+        // Main function to update all UI components
         function updateUI() {
-            renderSidebar();
+            // Only render the sidebar with full content if not in search mode
+            if (!isSearchMode) {
+                renderSidebar();
+            }
             renderQuiz();
         }
 
-        // Initialize the app on page load
-        document.addEventListener('DOMContentLoaded', updateUI);
-
+        // Initial render when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            updateUI();
+        });
     </script>
 </body>
 </html>
