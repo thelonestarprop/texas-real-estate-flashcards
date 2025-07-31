@@ -1,0 +1,126 @@
+{
+    "Earth Quiz": {
+        "Europe": [
+            {
+                "question": "What is the capital of Italy?",
+                "answers": [
+                    { "text": "Paris", "correct": false },
+                    { "text": "Berlin", "correct": false },
+                    { "text": "Rome", "correct": true },
+                    { "text": "Madrid", "correct": false }
+                ]
+            },
+            {
+                "question": "Which mountain range forms a natural border between France and Spain?",
+                "answers": [
+                    { "text": "The Alps", "correct": false },
+                    { "text": "The Carpathians", "correct": false },
+                    { "text": "The Urals", "correct": false },
+                    { "text": "The Pyrenees", "correct": true }
+                ]
+            }
+        ],
+        "Asia": [
+            {
+                "question": "What is the largest country in Asia by area?",
+                "answers": [
+                    { "text": "China", "correct": true },
+                    { "text": "Russia (Asian part)", "correct": false },
+                    { "text": "India", "correct": false },
+                    { "text": "Kazakhstan", "correct": false }
+                ]
+            },
+            {
+                "question": "What is the longest river in Asia?",
+                "answers": [
+                    { "text": "Yellow River", "correct": false },
+                    { "text": "Mekong River", "correct": false },
+                    { "text": "Ganges River", "correct": false },
+                    { "text": "Yangtze River", "correct": true }
+                ]
+            }
+        ],
+        "America": [
+            {
+                "question": "What is the longest river in South America?",
+                "answers": [
+                    { "text": "Mississippi River", "correct": false },
+                    { "text": "Nile River", "correct": false },
+                    { "text": "Amazon River", "correct": true },
+                    { "text": "Missouri River", "correct": false }
+                ]
+            },
+            {
+                "question": "What is the largest country in North America by area?",
+                "answers": [
+                    { "text": "United States", "correct": false },
+                    { "text": "Canada", "correct": true },
+                    { "text": "Mexico", "correct": false },
+                    { "text": "Brazil", "correct": false }
+                ]
+            }
+        ],
+        "Australia": [
+            {
+                "question": "What is the capital of Australia?",
+                "answers": [
+                    { "text": "Sydney", "correct": false },
+                    { "text": "Melbourne", "correct": false },
+                    { "text": "Canberra", "correct": true },
+                    { "text": "Perth", "correct": false }
+                ]
+            },
+            {
+                "question": "Which famous reef is located off the coast of Australia?",
+                "answers": [
+                    { "text": "The Florida Reef", "correct": false },
+                    { "text": "The Great Barrier Reef", "correct": true },
+                    { "text": "The Belize Barrier Reef", "correct": false },
+                    { "text": "The Red Sea Coral Reef", "correct": false }
+                ]
+            }
+        ]
+    },
+    "Mars Quiz": {
+        "Day": [
+            {
+                "question": "Which planet is known as the Red Planet?",
+                "answers": [
+                    { "text": "Earth", "correct": false },
+                    { "text": "Mars", "correct": true },
+                    { "text": "Jupiter", "correct": false },
+                    { "text": "Venus", "correct": false }
+                ]
+            },
+            {
+                "question": "What is the name of the largest volcano on Mars?",
+                "answers": [
+                    { "text": "Mount Sharp", "correct": false },
+                    { "text": "Valles Marineris", "correct": false },
+                    { "text": "Olympus Mons", "correct": true },
+                    { "text": "Elysium Mons", "correct": false }
+                ]
+            }
+        ],
+        "Night": [
+            {
+                "question": "What are the temperatures like on Mars at night?",
+                "answers": [
+                    { "text": "Similar to Earth's desert nights", "correct": false },
+                    { "text": "Extremely cold, dropping to -140°C", "correct": true },
+                    { "text": "Warm due to residual heat", "correct": false },
+                    { "text": "Varies depending on the season, but never freezing", "correct": false }
+                ]
+            },
+            {
+                "question": "What is the primary atmospheric component on Mars?",
+                "answers": [
+                    { "text": "Nitrogen", "correct": false },
+                    { "text": "Oxygen", "correct": false },
+                    { "text": "Carbon Dioxide", "correct": true },
+                    { "text": "Methane", "correct": false }
+                ]
+            }
+        ]
+    }
+}
