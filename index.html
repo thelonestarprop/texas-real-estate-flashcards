@@ -25,6 +25,12 @@
         details[open] summary .chevron-icon {
             transform: rotate(180deg);
         }
+        /* Custom style for the active lesson button */
+        .active-lesson-button {
+            background-color: #3b82f6; /* bg-blue-500 */
+            color: white;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body class="bg-blue-50 flex items-center justify-center min-h-screen p-4">
@@ -302,10 +308,10 @@
         };
 
         // --- Main Quiz App Logic ---
-        
+
         // State variables to keep track of the current position in the quiz
-        let currentChapterIndex = 0;
-        let currentLessonIndex = 0;
+        let currentChapterIndex = -1; // -1 indicates no lesson is selected
+        let currentLessonIndex = -1; // -1 indicates no lesson is selected
         let currentQuestionIndex = 0;
         let isAnswerSubmitted = false; // New state variable to control 'Next' button
 
@@ -345,7 +351,7 @@
                 quizNavigation.classList.add('hidden');
                 return;
             }
-            
+
             const currentChapter = quizData.chapters[currentChapterIndex];
             const currentLesson = currentChapter.lessons[currentLessonIndex];
             const currentQuestion = currentLesson.questions[currentQuestionIndex];
@@ -389,7 +395,7 @@
 
             feedbackContainer.classList.remove('hidden');
             const isCorrect = selectedAnswer === currentQuestion.correctAnswer;
-            
+
             let feedbackHTML = '';
             if (isCorrect) {
                 feedbackHTML = `
@@ -420,16 +426,21 @@
             currentChapterIndex = chapterIdx;
             currentLessonIndex = lessonIdx;
             currentQuestionIndex = 0;
-            renderQuiz();
+            updateUI();
         }
-
+        
         // Function to render the sidebar navigation
         function renderSidebar() {
             chapterButtonsContainer.innerHTML = ''; // Clear previous buttons
-            
+
             quizData.chapters.forEach((chapter, chapterIdx) => {
                 const chapterDetails = document.createElement('details');
                 chapterDetails.className = `w-full bg-white rounded-lg shadow-xl p-6 transition-all duration-300 open:bg-gray-100`;
+
+                // Set the details to open if it's the current chapter
+                if (chapterIdx === currentChapterIndex) {
+                    chapterDetails.open = true;
+                }
                 
                 const chapterSummary = document.createElement('summary');
                 chapterSummary.className = 'list-none text-xl font-bold text-gray-800 cursor-pointer flex items-center justify-between hover:text-blue-600 transition-colors duration-200';
@@ -449,6 +460,12 @@
                     const lessonButton = document.createElement('button');
                     lessonButton.textContent = lesson.title;
                     lessonButton.className = `w-full text-left py-2 px-3 rounded-lg transition-all duration-200 text-wrap break-words bg-gray-200 text-gray-700 hover:bg-gray-300`;
+
+                    // Add a special class for the active lesson
+                    if (chapterIdx === currentChapterIndex && lessonIdx === currentLessonIndex) {
+                        lessonButton.classList.add('active-lesson-button');
+                    }
+
                     lessonButton.addEventListener('click', () => handleLessonButtonClick(chapterIdx, lessonIdx));
                     lessonContainer.appendChild(lessonButton);
                 });
@@ -472,7 +489,9 @@
             // Check if this is the very first question of the very first lesson
             const isFirstQuestion = currentChapterIndex === 0 && currentLessonIndex === 0 && currentQuestionIndex === 0;
             // Check if this is the very last question of the very last lesson
-            const isLastQuestion = currentChapterIndex === quizData.chapters.length - 1 && currentLessonIndex === currentChapter.lessons.length - 1 && currentQuestionIndex === currentLesson.questions.length - 1;
+            const isLastQuestion = currentChapterIndex === quizData.chapters.length - 1 && 
+                                   currentLessonIndex === currentChapter.lessons.length - 1 && 
+                                   currentQuestionIndex === currentLesson.questions.length - 1;
 
             prevBtn.disabled = isFirstQuestion;
             // The next button is only enabled if an answer has been submitted and it's not the last question
@@ -487,56 +506,56 @@
             // If there's a next question in the current lesson, go to it
             if (currentQuestionIndex < currentLesson.questions.length - 1) {
                 currentQuestionIndex++;
-                renderQuiz();
             }
             // If it's the last question of the current lesson, check for a next lesson
             else if (currentLessonIndex < currentChapter.lessons.length - 1) {
                 currentLessonIndex++;
                 currentQuestionIndex = 0;
-                renderQuiz();
             }
             // If it's the last question of the last lesson in the current chapter, check for a next chapter
             else if (currentChapterIndex < quizData.chapters.length - 1) {
                 currentChapterIndex++;
                 currentLessonIndex = 0;
                 currentQuestionIndex = 0;
-                renderQuiz();
             }
+            updateUI();
         });
 
         // Event listener for the "Previous" button
         prevBtn.addEventListener('click', () => {
             const currentChapter = quizData.chapters[currentChapterIndex];
+            const currentLesson = currentChapter.lessons[currentLessonIndex];
             
             // If there's a previous question in the current lesson, go to it
             if (currentQuestionIndex > 0) {
                 currentQuestionIndex--;
-                renderQuiz();
             }
-            // If it's the first question of the current lesson, check for a previous lesson
+            // If it's the first question of the current lesson, go to the previous lesson's last question
             else if (currentLessonIndex > 0) {
                 currentLessonIndex--;
-                // Set to the last question of the previous lesson
-                currentQuestionIndex = currentChapter.lessons[currentLessonIndex].questions.length - 1; 
-                renderQuiz();
+                const prevLesson = currentChapter.lessons[currentLessonIndex];
+                currentQuestionIndex = prevLesson.questions.length - 1;
             }
-            // If it's the first question of the first lesson in the current chapter, check for a previous chapter
+            // If it's the first question of the first lesson in the current chapter, go to the previous chapter's last lesson
             else if (currentChapterIndex > 0) {
                 currentChapterIndex--;
                 const prevChapter = quizData.chapters[currentChapterIndex];
-                // Set to the last lesson of the previous chapter
-                currentLessonIndex = prevChapter.lessons.length - 1; 
-                // Set to the last question of the last lesson in that previous chapter
-                currentQuestionIndex = prevChapter.lessons[currentLessonIndex].questions.length - 1;
-                renderQuiz();
+                currentLessonIndex = prevChapter.lessons.length - 1;
+                const prevLesson = prevChapter.lessons[currentLessonIndex];
+                currentQuestionIndex = prevLesson.questions.length - 1;
             }
+            updateUI();
         });
 
-        // Initial setup
-        document.addEventListener('DOMContentLoaded', () => {
-            renderSidebar();
+        // Helper function to update all UI components
+        function updateUI() {
             renderQuiz();
-        });
+            renderSidebar();
+        }
+
+        // Initial render
+        updateUI();
+
     </script>
 </body>
 </html>
