@@ -3,43 +3,379 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz App</title>
+    <title>Interactive Quiz</title>
+    <!-- Tailwind CSS CDN for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom scrollbar for the sidebar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #2d3748;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: #4a5568;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background-color: #718096;
+        }
+        /* Custom styles for details/summary */
+        summary {
+            cursor: pointer;
+            list-style: none; /* Hide default arrow */
+        }
+        summary::before {
+            content: '▶';
+            margin-right: 0.5rem;
+            display: inline-block;
+            transition: transform 0.2s ease;
+        }
+        details[open] summary::before {
+            transform: rotate(90deg);
+        }
+    </style>
 </head>
-<body>
-    <h1>Quiz</h1>
-    <div id="quiz-container"></div>
+<body class="bg-gray-100 font-sans antialiased flex h-screen overflow-hidden">
+    <!-- Main container for the app -->
+    <div class="flex flex-col md:flex-row w-full h-full">
+
+        <!-- Left Navigation Sidebar -->
+        <aside class="bg-gray-800 text-white w-full md:w-64 p-6 flex flex-col space-y-4 shadow-xl overflow-y-auto custom-scrollbar">
+            <h1 class="text-3xl font-bold text-center border-b border-gray-700 pb-4 mb-4">Quiz App</h1>
+
+            <!-- Collapsible sections for quizzes -->
+            <div class="space-y-2">
+                <details class="group cursor-pointer">
+                    <summary class="text-xl font-semibold flex items-center p-2 rounded-lg hover:bg-gray-700 transition duration-200">
+                        Earth Quiz
+                    </summary>
+                    <div class="pl-6 pt-2 space-y-1">
+                        <button class="quiz-btn w-full text-left p-2 rounded-md hover:bg-gray-600 transition duration-200" data-section="Earth Quiz" data-subsection="Europe">Europe</button>
+                        <button class="quiz-btn w-full text-left p-2 rounded-md hover:bg-gray-600 transition duration-200" data-section="Earth Quiz" data-subsection="Asia">Asia</button>
+                        <button class="quiz-btn w-full text-left p-2 rounded-md hover:bg-gray-600 transition duration-200" data-section="Earth Quiz" data-subsection="America">America</button>
+                        <button class="quiz-btn w-full text-left p-2 rounded-md hover:bg-gray-600 transition duration-200" data-section="Earth Quiz" data-subsection="Australia">Australia</button>
+                    </div>
+                </details>
+
+                <details class="group cursor-pointer">
+                    <summary class="text-xl font-semibold flex items-center p-2 rounded-lg hover:bg-gray-700 transition duration-200">
+                        Mars Quiz
+                    </summary>
+                    <div class="pl-6 pt-2 space-y-1">
+                        <button class="quiz-btn w-full text-left p-2 rounded-md hover:bg-gray-600 transition duration-200" data-section="Mars Quiz" data-subsection="Day">Day</button>
+                        <button class="quiz-btn w-full text-left p-2 rounded-md hover:bg-gray-600 transition duration-200" data-section="Mars Quiz" data-subsection="Night">Night</button>
+                    </div>
+                </details>
+            </div>
+        </aside>
+
+        <!-- Main Quiz Content Area -->
+        <main class="flex-1 p-8 overflow-y-auto">
+            <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-2xl mx-auto">
+                <!-- Quiz Header -->
+                <h2 id="quiz-title" class="text-4xl font-extrabold text-center text-gray-800 mb-6">Select a Quiz</h2>
+                
+                <!-- Progress counters and bar -->
+                <div class="mb-8 p-4 bg-gray-100 rounded-lg shadow-inner">
+                    <div class="flex justify-between items-center text-lg font-bold mb-2">
+                        <span id="correct-count" class="text-green-600">Correct: 0</span>
+                        <span id="incorrect-count" class="text-red-600">Incorrect: 0</span>
+                    </div>
+                    <div class="w-full bg-gray-300 rounded-full h-4 relative">
+                        <div id="correct-bar" class="absolute h-4 bg-green-500 rounded-full transition-all duration-300 ease-out" style="width: 0%;"></div>
+                        <div id="incorrect-bar" class="absolute h-4 bg-red-500 rounded-full transition-all duration-300 ease-out" style="width: 0%;"></div>
+                    </div>
+                </div>
+
+                <!-- Quiz Questions and Answers -->
+                <div id="quiz-content">
+                    <!-- Questions and answers will be injected here by JavaScript -->
+                    <p class="text-center text-gray-600">
+                        Click on a quiz from the left-hand navigation to get started!
+                    </p>
+                </div>
+            </div>
+        </main>
+
+    </div>
 
     <script>
-        // Use the Fetch API to get the data from the local JSON file.
-        // The path to the file is relative to the HTML file.
-        fetch('quiz_data.json')
-            .then(response => {
-                // Check if the response is ok (status code 200)
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                // Parse the response as JSON
-                return response.json();
-            })
-            .then(data => {
-                // The 'data' variable now holds the parsed JSON object
-                console.log(data);
+        // Quiz data is embedded directly into the script for a self-contained app.
+        const quizData = {
+            "Earth Quiz": {
+                "Europe": [
+                    {
+                        "question": "What is the capital of Italy?",
+                        "answers": [
+                            { "text": "Paris", "correct": false },
+                            { "text": "Berlin", "correct": false },
+                            { "text": "Rome", "correct": true },
+                            { "text": "Madrid", "correct": false }
+                        ]
+                    },
+                    {
+                        "question": "Which mountain range forms a natural border between France and Spain?",
+                        "answers": [
+                            { "text": "The Alps", "correct": false },
+                            { "text": "The Carpathians", "correct": false },
+                            { "text": "The Urals", "correct": false },
+                            { "text": "The Pyrenees", "correct": true }
+                        ]
+                    }
+                ],
+                "Asia": [
+                    {
+                        "question": "What is the largest country in Asia by area?",
+                        "answers": [
+                            { "text": "China", "correct": true },
+                            { "text": "Russia (Asian part)", "correct": false },
+                            { "text": "India", "correct": false },
+                            { "text": "Kazakhstan", "correct": false }
+                        ]
+                    },
+                    {
+                        "question": "What is the longest river in Asia?",
+                        "answers": [
+                            { "text": "Yellow River", "correct": false },
+                            { "text": "Mekong River", "correct": false },
+                            { "text": "Ganges River", "correct": false },
+                            { "text": "Yangtze River", "correct": true }
+                        ]
+                    }
+                ],
+                "America": [
+                    {
+                        "question": "What is the longest river in South America?",
+                        "answers": [
+                            { "text": "Mississippi River", "correct": false },
+                            { "text": "Nile River", "correct": false },
+                            { "text": "Amazon River", "correct": true },
+                            { "text": "Missouri River", "correct": false }
+                        ]
+                    },
+                    {
+                        "question": "What is the largest country in North America by area?",
+                        "answers": [
+                            { "text": "United States", "correct": false },
+                            { "text": "Canada", "correct": true },
+                            { "text": "Mexico", "correct": false },
+                            { "text": "Brazil", "correct": false }
+                        ]
+                    }
+                ],
+                "Australia": [
+                    {
+                        "question": "What is the capital of Australia?",
+                        "answers": [
+                            { "text": "Sydney", "correct": false },
+                            { "text": "Melbourne", "correct": false },
+                            { "text": "Canberra", "correct": true },
+                            { "text": "Perth", "correct": false }
+                        ]
+                    },
+                    {
+                        "question": "Which famous reef is located off the coast of Australia?",
+                        "answers": [
+                            { "text": "The Florida Reef", "correct": false },
+                            { "text": "The Great Barrier Reef", "correct": true },
+                            { "text": "The Belize Barrier Reef", "correct": false },
+                            { "text": "The Red Sea Coral Reef", "correct": false }
+                        ]
+                    }
+                ]
+            },
+            "Mars Quiz": {
+                "Day": [
+                    {
+                        "question": "Which planet is known as the Red Planet?",
+                        "answers": [
+                            { "text": "Earth", "correct": false },
+                            { "text": "Mars", "correct": true },
+                            { "text": "Jupiter", "correct": false },
+                            { "text": "Venus", "correct": false }
+                        ]
+                    },
+                    {
+                        "question": "What is the name of the largest volcano on Mars?",
+                        "answers": [
+                            { "text": "Mount Sharp", "correct": false },
+                            { "text": "Valles Marineris", "correct": false },
+                            { "text": "Olympus Mons", "correct": true },
+                            { "text": "Elysium Mons", "correct": false }
+                        ]
+                    }
+                ],
+                "Night": [
+                    {
+                        "question": "What are the temperatures like on Mars at night?",
+                        "answers": [
+                            { "text": "Similar to Earth's desert nights", "correct": false },
+                            { "text": "Extremely cold, dropping to -140°C", "correct": true },
+                            { "text": "Warm due to residual heat", "correct": false },
+                            { "text": "Varies depending on the season, but never freezing", "correct": false }
+                        ]
+                    },
+                    {
+                        "question": "What is the primary atmospheric component on Mars?",
+                        "answers": [
+                            { "text": "Nitrogen", "correct": false },
+                            { "text": "Oxygen", "correct": false },
+                            { "text": "Carbon Dioxide", "correct": true },
+                            { "text": "Methane", "correct": false }
+                        ]
+                    }
+                ]
+            }
+        };
 
-                // You can now access the data and use it to build your quiz.
-                // For example, to get all the continents from the Earth Quiz:
-                const earthQuizContinents = Object.keys(data["Earth Quiz"]);
-                console.log(earthQuizContinents); // ["Europe", "Asia", "America", "Australia"]
+        // DOM elements
+        const quizTitleEl = document.getElementById('quiz-title');
+        const quizContentEl = document.getElementById('quiz-content');
+        const correctCountEl = document.getElementById('correct-count');
+        const incorrectCountEl = document.getElementById('incorrect-count');
+        const correctBarEl = document.getElementById('correct-bar');
+        const incorrectBarEl = document.getElementById('incorrect-bar');
+
+        // State variables
+        let currentQuizQuestions = [];
+        let currentQuestionIndex = 0;
+        let correctCount = 0;
+        let incorrectCount = 0;
+        let totalQuestions = 0;
+
+        // Function to load and display a new quiz
+        function loadQuiz(section, subsection) {
+            // Update the state with the new quiz questions
+            currentQuizQuestions = quizData[section][subsection];
+            totalQuestions = currentQuizQuestions.length;
+            currentQuestionIndex = 0;
+            correctCount = 0;
+            incorrectCount = 0;
+
+            // Update the UI
+            quizTitleEl.textContent = `${section} - ${subsection}`;
+            updateProgress();
+            showQuestion();
+        }
+
+        // Function to display the current question
+        function showQuestion() {
+            if (currentQuestionIndex < totalQuestions) {
+                const question = currentQuizQuestions[currentQuestionIndex];
                 
-                // You can then use this data to dynamically generate the quiz
-                // questions and answers on your web page.
-                const quizContainer = document.getElementById('quiz-container');
-                quizContainer.innerHTML = '<h2>Quiz data loaded successfully! Check the console.</h2>';
-                
-            })
-            .catch(error => {
-                // Handle any errors that occurred during the fetch
-                console.error('There has been a problem with your fetch operation:', error);
+                // Clear previous content
+                quizContentEl.innerHTML = '';
+
+                // Create and append the question element
+                const questionDiv = document.createElement('div');
+                questionDiv.classList.add('text-2xl', 'font-bold', 'mb-6', 'text-gray-900', 'text-center');
+                questionDiv.textContent = `Question ${currentQuestionIndex + 1} of ${totalQuestions}: ${question.question}`;
+                quizContentEl.appendChild(questionDiv);
+
+                // Create and append the answers container
+                const answersDiv = document.createElement('div');
+                answersDiv.classList.add('space-y-4');
+                question.answers.forEach(answer => {
+                    const answerBtn = document.createElement('button');
+                    answerBtn.classList.add('w-full', 'p-4', 'bg-gray-200', 'rounded-lg', 'text-gray-800', 'font-medium', 'hover:bg-gray-300', 'transition-colors', 'duration-200');
+                    answerBtn.textContent = answer.text;
+                    answerBtn.addEventListener('click', () => handleAnswer(answerBtn, answer.correct));
+                    answersDiv.appendChild(answerBtn);
+                });
+                quizContentEl.appendChild(answersDiv);
+            } else {
+                // End of the quiz
+                quizContentEl.innerHTML = `
+                    <div class="text-center p-8 bg-green-100 rounded-xl">
+                        <h3 class="text-3xl font-bold text-green-700 mb-4">Quiz Complete!</h3>
+                        <p class="text-xl text-gray-700">You got ${correctCount} out of ${totalQuestions} questions correct.</p>
+                        <button onclick="window.location.reload()" class="mt-6 px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition duration-200">Restart</button>
+                    </div>
+                `;
+            }
+        }
+
+        // Function to handle an answer click
+        function handleAnswer(selectedButton, isCorrect) {
+            // Disable all answer buttons to prevent multiple selections
+            Array.from(quizContentEl.querySelectorAll('button')).forEach(btn => {
+                btn.disabled = true;
+                btn.classList.add('cursor-not-allowed');
             });
+            
+            // Check if the answer is correct
+            if (isCorrect) {
+                correctCount++;
+                selectedButton.classList.add('bg-green-500', 'text-white', 'hover:bg-green-500');
+            } else {
+                incorrectCount++;
+                selectedButton.classList.add('bg-red-500', 'text-white', 'hover:bg-red-500');
+                
+                // Highlight the correct answer
+                const correctButton = Array.from(quizContentEl.querySelectorAll('button')).find(btn => {
+                    const answerText = btn.textContent;
+                    const question = currentQuizQuestions[currentQuestionIndex];
+                    return question.answers.find(a => a.text === answerText && a.correct);
+                });
+                if (correctButton) {
+                    correctButton.classList.add('bg-green-500', 'text-white');
+                }
+            }
+            
+            // Update the UI progress
+            updateProgress();
+            
+            // Move to the next question after a delay
+            setTimeout(() => {
+                currentQuestionIndex++;
+                showQuestion();
+            }, 1500); // 1.5 seconds delay
+        }
+
+        // Function to update the progress counters and bar
+        function updateProgress() {
+            correctCountEl.textContent = `Correct: ${correctCount}`;
+            incorrectCountEl.textContent = `Incorrect: ${incorrectCount}`;
+
+            const total = correctCount + incorrectCount;
+            let correctPercentage = 0;
+            let incorrectPercentage = 0;
+
+            if (total > 0) {
+                correctPercentage = (correctCount / total) * 100;
+                incorrectPercentage = (incorrectCount / total) * 100;
+            }
+            
+            correctBarEl.style.width = `${correctPercentage}%`;
+            incorrectBarEl.style.width = `${incorrectPercentage}%`;
+
+            // If a quiz is not started, the total is 0. Reset to 0% width.
+            if (currentQuizQuestions.length === 0) {
+                correctBarEl.style.width = '0%';
+                incorrectBarEl.style.width = '0%';
+            }
+        }
+
+        // Event listeners for the navigation buttons
+        document.querySelectorAll('.quiz-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                const section = button.getAttribute('data-section');
+                const subsection = button.getAttribute('data-subsection');
+                loadQuiz(section, subsection);
+
+                // Optional: Close all details tags on button click
+                document.querySelectorAll('details').forEach(detail => {
+                    if (detail.open) {
+                        detail.open = false;
+                    }
+                });
+            });
+        });
+
+        // Initialize the app with a progress update
+        updateProgress();
     </script>
 </body>
 </html>
