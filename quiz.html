@@ -45,27 +45,32 @@
         <aside class="bg-gray-800 text-white w-full md:w-64 p-6 flex flex-col space-y-4 shadow-xl overflow-y-auto custom-scrollbar">
             <h1 class="text-3xl font-bold text-center border-b border-gray-700 pb-4 mb-4">Quiz App</h1>
 
+            <!-- Search input field -->
+            <div class="mt-4">
+                <input type="text" id="quiz-search" placeholder="Search quizzes..." class="w-full p-2 rounded-lg bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+
             <!-- Collapsible sections for quizzes -->
-            <div class="space-y-2">
-                <details class="group cursor-pointer">
+            <div id="quiz-list-container" class="space-y-2 mt-4">
+                <details class="group cursor-pointer" data-section="Earth Quiz">
                     <summary class="text-xl font-semibold flex items-center p-2 rounded-lg hover:bg-gray-700 transition duration-200">
                         Earth Quiz
                     </summary>
                     <div class="pl-6 pt-2 space-y-1">
-                        <button class="quiz-btn w-full text-left p-2 rounded-md hover:bg-gray-600 transition duration-200" data-section="Earth Quiz" data-subsection="Europe">Europe</button>
-                        <button class="quiz-btn w-full text-left p-2 rounded-md hover:bg-gray-600 transition duration-200" data-section="Earth Quiz" data-subsection="Asia">Asia</button>
-                        <button class="quiz-btn w-full text-left p-2 rounded-md hover:bg-gray-600 transition duration-200" data-section="Earth Quiz" data-subsection="America">America</button>
-                        <button class="quiz-btn w-full text-left p-2 rounded-md hover:bg-gray-600 transition duration-200" data-section="Earth Quiz" data-subsection="Australia">Australia</button>
+                        <button class="quiz-btn w-full text-left p-2 rounded-md hover:bg-gray-600 transition duration-200" data-subsection="Europe">Europe</button>
+                        <button class="quiz-btn w-full text-left p-2 rounded-md hover:bg-gray-600 transition duration-200" data-subsection="Asia">Asia</button>
+                        <button class="quiz-btn w-full text-left p-2 rounded-md hover:bg-gray-600 transition duration-200" data-subsection="America">America</button>
+                        <button class="quiz-btn w-full text-left p-2 rounded-md hover:bg-gray-600 transition duration-200" data-subsection="Australia">Australia</button>
                     </div>
                 </details>
 
-                <details class="group cursor-pointer">
+                <details class="group cursor-pointer" data-section="Mars Quiz">
                     <summary class="text-xl font-semibold flex items-center p-2 rounded-lg hover:bg-gray-700 transition duration-200">
                         Mars Quiz
                     </summary>
                     <div class="pl-6 pt-2 space-y-1">
-                        <button class="quiz-btn w-full text-left p-2 rounded-md hover:bg-gray-600 transition duration-200" data-section="Mars Quiz" data-subsection="Day">Day</button>
-                        <button class="quiz-btn w-full text-left p-2 rounded-md hover:bg-gray-600 transition duration-200" data-section="Mars Quiz" data-subsection="Night">Night</button>
+                        <button class="quiz-btn w-full text-left p-2 rounded-md hover:bg-gray-600 transition duration-200" data-subsection="Day">Day</button>
+                        <button class="quiz-btn w-full text-left p-2 rounded-md hover:bg-gray-600 transition duration-200" data-subsection="Night">Night</button>
                     </div>
                 </details>
             </div>
@@ -102,8 +107,19 @@
     </div>
 
     <script>
-        // Quiz data is embedded directly into the script for a self-contained app.
-        const quizData = {
+        // DOM elements
+        const quizTitleEl = document.getElementById('quiz-title');
+        const quizContentEl = document.getElementById('quiz-content');
+        const correctCountEl = document.getElementById('correct-count');
+        const incorrectCountEl = document.getElementById('incorrect-count');
+        const correctBarEl = document.getElementById('correct-bar');
+        const incorrectBarEl = document.getElementById('incorrect-bar');
+        const searchInput = document.getElementById('quiz-search');
+        const quizListContainer = document.getElementById('quiz-list-container');
+        let fullQuizData = {}; // This will store the full quiz data after fetching
+
+        // Quiz data is defined here as a JSON object, but we will fetch it as if it's an external file.
+        const quizDataJson = JSON.stringify({
             "Earth Quiz": {
                 "Europe": [
                     {
@@ -216,27 +232,14 @@
                             { "text": "Warm due to residual heat", "correct": false },
                             { "text": "Varies depending on the season, but never freezing", "correct": false }
                         ]
-                    },
-                    {
-                        "question": "What is the primary atmospheric component on Mars?",
-                        "answers": [
-                            { "text": "Nitrogen", "correct": false },
-                            { "text": "Oxygen", "correct": false },
-                            { "text": "Carbon Dioxide", "correct": true },
-                            { "text": "Methane", "correct": false }
-                        ]
                     }
                 ]
             }
-        };
+        });
 
-        // DOM elements
-        const quizTitleEl = document.getElementById('quiz-title');
-        const quizContentEl = document.getElementById('quiz-content');
-        const correctCountEl = document.getElementById('correct-count');
-        const incorrectCountEl = document.getElementById('incorrect-count');
-        const correctBarEl = document.getElementById('correct-bar');
-        const incorrectBarEl = document.getElementById('incorrect-bar');
+        // Create a Blob from the JSON string and a URL to fetch it
+        const quizDataBlob = new Blob([quizDataJson], { type: 'application/json' });
+        const quizDataUrl = URL.createObjectURL(quizDataBlob);
 
         // State variables
         let currentQuizQuestions = [];
@@ -246,18 +249,36 @@
         let totalQuestions = 0;
 
         // Function to load and display a new quiz
-        function loadQuiz(section, subsection) {
-            // Update the state with the new quiz questions
-            currentQuizQuestions = quizData[section][subsection];
-            totalQuestions = currentQuizQuestions.length;
-            currentQuestionIndex = 0;
-            correctCount = 0;
-            incorrectCount = 0;
+        async function loadQuiz(section, subsection) {
+            // Display a loading message while fetching data
+            quizContentEl.innerHTML = '<p class="text-center text-xl text-gray-500 animate-pulse">Loading quiz...</p>';
+            
+            try {
+                // Check if fullQuizData has already been loaded, otherwise fetch it
+                if (Object.keys(fullQuizData).length === 0) {
+                    const response = await fetch(quizDataUrl);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    fullQuizData = await response.json();
+                }
 
-            // Update the UI
-            quizTitleEl.textContent = `${section} - ${subsection}`;
-            updateProgress();
-            showQuestion();
+                // Update the state with the new quiz questions
+                currentQuizQuestions = fullQuizData[section][subsection];
+                totalQuestions = currentQuizQuestions.length;
+                currentQuestionIndex = 0;
+                correctCount = 0;
+                incorrectCount = 0;
+
+                // Update the UI
+                quizTitleEl.textContent = `${section} - ${subsection}`;
+                updateProgress();
+                showQuestion();
+
+            } catch (error) {
+                console.error("Could not fetch quiz data:", error);
+                quizContentEl.innerHTML = `<p class="text-center text-red-500">Error loading quiz: ${error.message}</p>`;
+            }
         }
 
         // Function to display the current question
@@ -343,25 +364,88 @@
             let correctPercentage = 0;
             let incorrectPercentage = 0;
 
-            if (total > 0) {
-                correctPercentage = (correctCount / total) * 100;
-                incorrectPercentage = (incorrectCount / total) * 100;
+            if (totalQuestions > 0) {
+                correctPercentage = (correctCount / totalQuestions) * 100;
+                incorrectPercentage = (incorrectCount / totalQuestions) * 100;
             }
             
             correctBarEl.style.width = `${correctPercentage}%`;
             incorrectBarEl.style.width = `${incorrectPercentage}%`;
-
-            // If a quiz is not started, the total is 0. Reset to 0% width.
-            if (currentQuizQuestions.length === 0) {
-                correctBarEl.style.width = '0%';
-                incorrectBarEl.style.width = '0%';
-            }
+            incorrectBarEl.style.left = `${correctPercentage}%`;
         }
+
+        // Function to filter the quiz buttons based on search term
+        function filterQuizzes(searchTerm) {
+            const quizDetails = document.querySelectorAll('#quiz-list-container details');
+            const term = searchTerm.toLowerCase();
+
+            quizDetails.forEach(detail => {
+                const sectionName = detail.querySelector('summary').textContent.trim().toLowerCase();
+                const quizButtons = detail.querySelectorAll('.quiz-btn');
+                let hasMatchInSection = false;
+
+                // Check for match in section title
+                if (sectionName.includes(term)) {
+                    hasMatchInSection = true;
+                }
+
+                // Iterate over quiz buttons to find a match in the questions or answers
+                quizButtons.forEach(button => {
+                    const subsectionName = button.textContent.trim().toLowerCase();
+                    const sectionData = fullQuizData[detail.getAttribute('data-section')];
+                    const subsectionData = sectionData ? sectionData[button.getAttribute('data-subsection')] : null;
+
+                    let buttonMatches = false;
+                    // Check if the button's text itself matches the search term
+                    if (subsectionName.includes(term)) {
+                        buttonMatches = true;
+                    }
+
+                    // If a subsection exists, check its questions and answers
+                    if (subsectionData) {
+                        for (const q of subsectionData) {
+                            if (q.question.toLowerCase().includes(term)) {
+                                buttonMatches = true;
+                                break;
+                            }
+                            for (const a of q.answers) {
+                                if (a.text.toLowerCase().includes(term)) {
+                                    buttonMatches = true;
+                                    break;
+                                }
+                            }
+                            if (buttonMatches) break;
+                        }
+                    }
+
+                    if (buttonMatches) {
+                        button.style.display = 'block'; // Show the button
+                        hasMatchInSection = true; // The parent section should also be shown
+                    } else {
+                        button.style.display = 'none'; // Hide the button
+                    }
+                });
+
+                // Show/hide the parent details based on if any child buttons matched or if the section title matched
+                if (hasMatchInSection) {
+                    detail.style.display = 'block';
+                    // Open the details element if there's a match, but only if a search term is present
+                    if (searchTerm) {
+                        detail.open = true;
+                    } else {
+                        detail.open = false; // Collapse when search is cleared
+                    }
+                } else {
+                    detail.style.display = 'none';
+                }
+            });
+        }
+
 
         // Event listeners for the navigation buttons
         document.querySelectorAll('.quiz-btn').forEach(button => {
             button.addEventListener('click', () => {
-                const section = button.getAttribute('data-section');
+                const section = button.closest('details').getAttribute('data-section');
                 const subsection = button.getAttribute('data-subsection');
                 loadQuiz(section, subsection);
 
@@ -373,9 +457,32 @@
                 });
             });
         });
+        
+        // Event listener for the search input
+        searchInput.addEventListener('input', (e) => {
+            filterQuizzes(e.target.value);
+        });
 
-        // Initialize the app with a progress update
-        updateProgress();
+        // Initialize the app by fetching data and setting up event listeners.
+        window.addEventListener('DOMContentLoaded', async () => {
+            try {
+                // Fetch the quiz data on initial load
+                const response = await fetch(quizDataUrl);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                fullQuizData = await response.json();
+                console.log("Quiz data loaded successfully.");
+            } catch (error) {
+                console.error("Could not fetch quiz data on initial load:", error);
+                quizContentEl.innerHTML = `<p class="text-center text-red-500">Error loading quizzes: ${error.message}</p>`;
+            }
+        });
+
+        // Clean up the Blob URL when the window is unloaded
+        window.addEventListener('unload', () => {
+            URL.revokeObjectURL(quizDataUrl);
+        });
     </script>
 </body>
 </html>
