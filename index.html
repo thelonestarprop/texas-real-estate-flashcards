@@ -18,8 +18,12 @@
             animation: sweep .3s ease-in-out;
         }
         @keyframes sweep {
-            0%    {opacity: 0; margin-left: -10px}
+            0%  {opacity: 0; margin-left: -10px}
             100%  {opacity: 1; margin-left: 0px}
+        }
+        /* Rotates the chevron when the details element is open */
+        details[open] summary .chevron-icon {
+            transform: rotate(180deg);
         }
     </style>
 </head>
@@ -28,33 +32,24 @@
     <!-- Main container for the layout -->
     <div class="flex flex-col md:flex-row gap-6 max-w-6xl w-full">
 
-        <!-- Left Sidebar for Chapter Buttons, now collapsible -->
-        <details open class="w-full md:w-1/4 bg-white rounded-lg shadow-xl p-6 transition-all duration-300 open:bg-gray-100">
-            <summary class="list-none text-xl font-bold text-gray-800 cursor-pointer flex items-center justify-between hover:text-blue-600 transition-colors duration-200">
-                Chapters
-                <!-- Chevron icon for open/close state -->
-                <svg class="w-5 h-5 text-gray-500 transform transition-transform duration-300 open:rotate-180" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                </svg>
-            </summary>
-            <div id="chapter-buttons-container" class="space-y-2 mt-4">
-                <!-- Chapter buttons will be dynamically inserted here -->
-            </div>
-        </details>
+        <!-- Left Sidebar for Chapter and Lesson Buttons -->
+        <div id="chapter-buttons-container" class="w-full md:w-1/4 space-y-4">
+            <!-- Chapters and lessons will be dynamically inserted here -->
+        </div>
 
         <!-- Right side: Main content area for the quiz -->
         <div class="flex-1 bg-white rounded-lg shadow-xl p-8 md:p-12 space-y-8">
 
             <!-- Header -->
-            <h1 class="text-3xl font-bold text-center text-gray-800">Review Questions</h1>
+            <h1 class="text-3xl font-bold text-center text-gray-800">Quiz</h1>
 
             <!-- Quiz content will be dynamically inserted here -->
             <div id="quiz-container" class="space-y-6">
-                <!-- This will be replaced by the dynamic content from JavaScript -->
+                <p class="text-center text-gray-500 text-lg">Please select a lesson from the left to begin the quiz.</p>
             </div>
 
             <!-- Navigation buttons -->
-            <div class="flex justify-between items-center mt-8 pt-6 border-t border-gray-200">
+            <div id="quiz-navigation" class="hidden justify-between items-center mt-8 pt-6 border-t border-gray-200">
                 <button id="prevBtn" class="bg-gray-300 text-gray-800 font-semibold py-3 px-6 rounded-lg transition-all duration-300 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed">
                     &laquo; Previous
                 </button>
@@ -62,166 +57,356 @@
                     Next &raquo;
                 </button>
             </div>
-
         </div>
     </div>
 
+    <!-- Custom Modal for Alerts/Feedback -->
+    <div id="modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden">
+      <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3 text-center">
+          <h3 id="modal-title" class="text-lg leading-6 font-medium text-gray-900"></h3>
+          <div class="mt-2 px-7 py-3">
+            <p id="modal-content" class="text-sm text-gray-500"></p>
+          </div>
+          <div class="items-center px-4 py-3">
+            <button id="modal-close" class="px-4 py-2 bg-blue-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">OK</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
     <script>
-        // Store your quiz data in a JavaScript array of objects
+        // Store your quiz data in a new hierarchical structure
         const quizData = [
             {
                 chapter: "The Basics",
-                question: "The original amortization term minus the number of payments that have been applied refers to the:",
-                yourAnswer: "Remaining term",
-                isCorrect: true,
-                possibleAnswers: ["Remaining interest", "Remaining term", "Total amortization term", "Loan amount"],
-                explanation: "The original amortization term minus the number of payments that have been applied refers to the remaining term.",
+                lessons: [
+                    {
+                        title: "Amortization and Terminology",
+                        questions: [
+                            {
+                                question: "The original amortization term minus the number of payments that have been applied refers to the:",
+                                possibleAnswers: ["Remaining interest", "Remaining term", "Total amortization term", "Loan amount"],
+                                correctAnswer: "Remaining term",
+                            },
+                        ]
+                    },
+                    {
+                        title: "Legal Terms",
+                        questions: [
+                            {
+                                question: "If Franklin, a real estate agent, intentionally speaks very highly and enthusiastically about a property he is trying to sell to a client in order to secure the deal, this type of behavior would be:",
+                                possibleAnswers: ["Puffing", "Steering", "Illegal", "Misrepresentation"],
+                                correctAnswer: "Puffing",
+                                explanation: "The term “puffing” can be used to describe “sales talk” that is used to secure a deal. As long as there is no misrepresentation, it is considered a legal practice.",
+                            },
+                        ]
+                    },
+                ]
             },
             {
-                chapter: "Legal Terms",
-                question: "If Franklin, a real estate agent, intentionally speaks very highly and enthusiastically about a property he is trying to sell to a client in order to secure the deal, this type of behavior would be:",
-                yourAnswer: "Puffing",
-                isCorrect: true,
-                possibleAnswers: ["Puffing", "Steering", "Illegal", "Misrepresentation"],
-                explanation: "The term “puffing” can be used to describe “sales talk” that is used to secure a deal. As long as there is no misrepresentation, it is considered a legal practice.",
+                chapter: "Mortgage Fundamentals",
+                lessons: [
+                    {
+                        title: "Mortgage Types",
+                        questions: [
+                            {
+                                question: "Which of the following is a key characteristic of a fixed-rate mortgage?",
+                                possibleAnswers: ["The interest rate can change over time.", "The interest rate remains the same for the entire loan term.", "The monthly payment fluctuates based on market conditions.", "It is only available for commercial properties."],
+                                correctAnswer: "The interest rate remains the same for the entire loan term.",
+                                explanation: "A fixed-rate mortgage is a loan where the interest rate and monthly payment remain constant throughout the entire loan term.",
+                            },
+                        ]
+                    },
+                    {
+                        title: "Property Ownership",
+                        questions: [
+                            {
+                                question: "What is a deed?",
+                                possibleAnswers: ["A contract for a loan.", "A legal document that transfers ownership of a property.", "A property tax bill.", "A certificate of occupancy."],
+                                correctAnswer: "A legal document that transfers ownership of a property.",
+                                explanation: "A deed is a legal instrument used to transfer title or ownership of real property from one person to another.",
+                            },
+                        ]
+                    },
+                    {
+                        title: "Contracts and Clauses",
+                        questions: [
+                            {
+                                question: "What is a mortgage contingency?",
+                                possibleAnswers: ["A penalty for paying off a mortgage early.", "A clause in a purchase agreement that protects the buyer if they cannot secure financing.", "An additional fee added to the mortgage interest rate.", "A type of insurance for the property owner."],
+                                correctAnswer: "A clause in a purchase agreement that protects the buyer if they cannot secure financing.",
+                                explanation: "A mortgage contingency is a clause in a sales contract that specifies the sale is dependent on the buyer getting a mortgage for the property. If the buyer can't get a mortgage, they can cancel the contract without penalty.",
+                            },
+                        ]
+                    }
+                ]
             },
             {
-                chapter: "Mortgage Types",
-                question: "Which of the following is a key characteristic of a fixed-rate mortgage?",
-                yourAnswer: "The interest rate remains the same for the entire loan term.",
-                isCorrect: true,
-                possibleAnswers: ["The interest rate can change over time.", "The interest rate remains the same for the entire loan term.", "The monthly payment fluctuates based on market conditions.", "It is only available for commercial properties."],
-                explanation: "A fixed-rate mortgage is a loan where the interest rate and monthly payment remain constant throughout the entire loan term.",
+                chapter: "The Closing Process",
+                lessons: [
+                    {
+                        title: "Closing Costs",
+                        questions: [
+                            {
+                                question: "Which of the following is typically considered a closing cost?",
+                                possibleAnswers: ["Utility bills", "Property taxes", "Earnest money deposit", "Home appraisal fee"],
+                                correctAnswer: "Home appraisal fee",
+                                explanation: "Closing costs are fees associated with the purchase of a home. A home appraisal fee is a common example, while property taxes and utility bills are ongoing expenses, and an earnest money deposit is a credit toward the purchase price.",
+                            },
+                            {
+                                question: "What is a 'title search'?",
+                                possibleAnswers: ["A search for a buyer for the property.", "A legal review of a property's history to ensure clear ownership.", "A physical inspection of the property's condition.", "A check of the buyer's credit history."],
+                                correctAnswer: "A legal review of a property's history to ensure clear ownership.",
+                                explanation: "A title search is a process to confirm that the person selling the property has the legal right to do so and that there are no liens or other claims against it.",
+                            },
+                        ]
+                    },
+                    {
+                        title: "Escrow and Title",
+                        questions: [
+                            {
+                                question: "What is the purpose of an escrow account?",
+                                possibleAnswers: ["To hold funds for future property repairs.", "To save for a down payment.", "To hold funds and documents during a real estate transaction.", "To pay the real estate agent's commission."],
+                                correctAnswer: "To hold funds and documents during a real estate transaction.",
+                                explanation: "An escrow account is an account held by a third party (an escrow agent) on behalf of two parties in a transaction, holding the funds and documents until all conditions are met.",
+                            },
+                        ]
+                    }
+                ]
             },
             {
-                chapter: "Property Ownership",
-                question: "What is a deed?",
-                yourAnswer: "A legal document that transfers ownership of a property.",
-                isCorrect: true,
-                possibleAnswers: ["A contract for a loan.", "A legal document that transfers ownership of a property.", "A property tax bill.", "A certificate of occupancy."],
-                explanation: "A deed is a legal instrument used to transfer title or ownership of real property from one person to another.",
+                chapter: "Investment Properties",
+                lessons: [
+                    {
+                        title: "Types of Investment",
+                        questions: [
+                            {
+                                question: "What is the term for a property purchased with the intention of generating income through rent?",
+                                possibleAnswers: ["Primary residence", "Second home", "Rental property", "Vacation home"],
+                                correctAnswer: "Rental property",
+                                explanation: "A rental property is a real estate investment where the owner leases the property to tenants to generate income.",
+                            },
+                        ]
+                    },
+                    {
+                        title: "Financial Metrics",
+                        questions: [
+                            {
+                                question: "What does 'Cap Rate' stand for in real estate investment?",
+                                possibleAnswers: ["Capitalization Rate", "Closing Asset Price", "Cash Asset Ratio", "Credit Application Ratio"],
+                                correctAnswer: "Capitalization Rate",
+                                explanation: "Capitalization Rate (Cap Rate) is a financial metric used to estimate the potential return on a real estate investment. It is the ratio of net operating income to the property's asset value.",
+                            },
+                        ]
+                    }
+                ]
             },
             {
-                chapter: "Appraisal Process",
-                question: "What is the primary function of a real estate appraiser?",
-                yourAnswer: "To estimate the market value of a property.",
-                isCorrect: true,
-                possibleAnswers: ["To sell a property for the highest price.", "To estimate the market value of a property.", "To manage property rentals.", "To provide legal advice on real estate transactions."],
-                explanation: "A real estate appraiser's primary role is to provide an objective estimate of a property's market value, which is often required for lending purposes.",
-            },
-            {
-                chapter: "Contracts and Clauses",
-                question: "What is a mortgage contingency?",
-                yourAnswer: "A clause in a purchase agreement that protects the buyer if they cannot secure financing.",
-                isCorrect: true,
-                possibleAnswers: ["A penalty for paying off a mortgage early.", "A clause in a purchase agreement that protects the buyer if they cannot secure financing.", "An additional fee added to the mortgage interest rate.", "A type of insurance for the property owner."],
-                explanation: "A mortgage contingency is a clause in a sales contract that specifies the sale is dependent on the buyer getting a mortgage for the property. If the buyer can't get a mortgage, they can cancel the contract without penalty.",
-            },
-            {
-                chapter: "Property Rights",
-                question: "In real estate, what does the term 'easement' refer to?",
-                yourAnswer: "A legal right to use another person's property for a specific purpose.",
-                isCorrect: true,
-                possibleAnswers: ["The total area of a property.", "A tax on the value of the property.", "A legal right to use another person's property for a specific purpose.", "A lien placed on a property for unpaid debts."],
-                explanation: "An easement is a legal right to cross or use another person's land for a specific purpose. A common example is a utility company's right to access power lines on a private property.",
+                chapter: "Real Estate Financing",
+                lessons: [
+                    {
+                        title: "Loan Types",
+                        questions: [
+                            {
+                                question: "Which loan is backed by the U.S. government and is popular for first-time homebuyers?",
+                                possibleAnswers: ["Conventional loan", "FHA loan", "Jumbo loan", "Bridge loan"],
+                                correctAnswer: "FHA loan",
+                                explanation: "An FHA loan is a mortgage issued by an FHA-approved lender and insured by the Federal Housing Administration. They are popular with first-time homebuyers due to lower down payment requirements.",
+                            },
+                        ]
+                    },
+                    {
+                        title: "Credit and Debt",
+                        questions: [
+                            {
+                                question: "What is a 'debt-to-income' ratio (DTI)?",
+                                possibleAnswers: ["A ratio of all your income to all your expenses.", "A ratio of your gross income to your net income.", "A ratio of your monthly debt payments to your gross monthly income.", "A ratio of your credit score to your total debt."],
+                                correctAnswer: "A ratio of your monthly debt payments to your gross monthly income.",
+                                explanation: "The debt-to-income (DTI) ratio is a personal finance measure that compares your total monthly debt payments to your gross monthly income. It helps lenders assess your ability to manage monthly payments.",
+                            },
+                        ]
+                    }
+                ]
             }
         ];
 
+        let currentChapterIndex = 0;
+        let currentLessonIndex = 0;
         let currentQuestionIndex = 0;
+
         const quizContainer = document.getElementById('quiz-container');
         const chapterButtonsContainer = document.getElementById('chapter-buttons-container');
         const prevBtn = document.getElementById('prevBtn');
         const nextBtn = document.getElementById('nextBtn');
-        
-        // Function to render the current question and the chapter buttons
-        function renderQuestion() {
-            // Get the data for the current question
-            const currentData = quizData[currentQuestionIndex];
+        const quizNavigation = document.getElementById('quiz-navigation');
 
-            // Create the HTML for the question card
-            quizContainer.innerHTML = `
-                <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
-                    <p class="text-lg font-medium text-gray-700">Question #${currentQuestionIndex + 1}: ${currentData.question}</p>
-                    
-                    <div class="mt-4 space-y-2 text-gray-600">
-                        <!-- Display Your Answer -->
-                        <div class="flex items-center space-x-2">
-                            <svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                            </svg>
-                            <span class="font-semibold text-green-700">Correct:</span>
-                            <span class="text-gray-600">${currentData.yourAnswer}</span>
-                        </div>
-                        
-                        <!-- Display the Correct Answer (if different) -->
-                        ${currentData.yourAnswer !== currentData.correctAnswer ? `
-                            <p class="font-semibold text-blue-700">Correct Answer:</p>
-                            <ul class="list-disc pl-5 space-y-1 text-blue-600">
-                                <li>${currentData.correctAnswer}</li>
-                            </ul>
-                        ` : ''}
+        const modal = document.getElementById('modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalContent = document.getElementById('modal-content');
+        const modalCloseBtn = document.getElementById('modal-close');
 
-                        <!-- Display All Possible Answers -->
-                        ${currentData.possibleAnswers ? `
-                            <p class="font-semibold">All Possible Answers:</p>
-                            <ul class="list-disc pl-5 space-y-1 text-gray-500">
-                                ${currentData.possibleAnswers.map(answer => `<li>${answer}</li>`).join('')}
-                            </ul>
-                        ` : ''}
-                        
-                        <!-- Display Explanation -->
-                        <p class="font-semibold pt-2 border-t border-gray-200">Explanation:</p>
-                        <p class="text-gray-600">${currentData.explanation}</p>
-                    </div>
-                </div>
-            `;
-
-            // Clear and re-render chapter buttons
-            chapterButtonsContainer.innerHTML = '';
-            quizData.forEach((data, index) => {
-                const button = document.createElement('button');
-                button.textContent = `Chapter ${index + 1}: ${data.chapter}`;
-                button.dataset.index = index;
-                // Add styling and highlight the active button
-                button.className = `w-full text-left py-3 px-4 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-wrap break-words ${
-                    index === currentQuestionIndex 
-                    ? 'bg-blue-600 text-white font-semibold shadow-md' 
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`;
-                chapterButtonsContainer.appendChild(button);
-            });
-
-            // Enable/disable navigation buttons based on the current index
-            prevBtn.disabled = currentQuestionIndex === 0;
-            nextBtn.disabled = currentQuestionIndex === quizData.length - 1;
+        // Function to show a custom modal
+        function showModal(title, message) {
+            modalTitle.textContent = title;
+            modalContent.textContent = message;
+            modal.classList.remove('hidden');
         }
 
-        // Event listener for the navigation buttons
+        // Function to close the modal
+        modalCloseBtn.addEventListener('click', () => {
+            modal.classList.add('hidden');
+        });
+
+        // Function to render the questions for the current lesson
+        function renderQuiz() {
+            const currentLesson = quizData[currentChapterIndex].lessons[currentLessonIndex];
+            const currentQuestion = currentLesson.questions[currentQuestionIndex];
+
+            // Render question and options
+            quizContainer.innerHTML = `
+                <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                    <p class="text-lg font-medium text-gray-700">Question ${currentQuestionIndex + 1}/${currentLesson.questions.length}:</p>
+                    <p class="text-xl font-semibold mt-2">${currentQuestion.question}</p>
+                    <div class="mt-4 space-y-3">
+                        ${currentQuestion.possibleAnswers.map((answer, index) => `
+                            <label class="block cursor-pointer p-4 rounded-lg bg-white border border-gray-200 hover:bg-blue-50 transition-colors duration-200">
+                                <input type="radio" name="answer" value="${answer}" class="mr-2">
+                                <span class="text-gray-800">${answer}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                    <button id="submitBtn" class="mt-6 w-full py-3 px-6 bg-green-600 text-white rounded-lg shadow-md transition-all duration-300 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
+                        Submit Answer
+                    </button>
+                    <div id="feedback-container" class="mt-4 p-4 rounded-lg hidden"></div>
+                </div>
+            `;
+            quizNavigation.classList.remove('hidden');
+
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.addEventListener('click', handleSubmit);
+            updateNavButtons();
+        }
+
+        // Function to handle answer submission
+        function handleSubmit() {
+            const selectedAnswer = document.querySelector('input[name="answer"]:checked')?.value;
+            const currentQuestion = quizData[currentChapterIndex].lessons[currentLessonIndex].questions[currentQuestionIndex];
+            const feedbackContainer = document.getElementById('feedback-container');
+
+            if (!selectedAnswer) {
+                showModal('Answer Required', 'Please select an answer before submitting.');
+                return;
+            }
+
+            feedbackContainer.classList.remove('hidden');
+            const isCorrect = selectedAnswer === currentQuestion.correctAnswer;
+            
+            let feedbackHTML = '';
+            if (isCorrect) {
+                feedbackHTML = `
+                    <div class="bg-green-100 text-green-700 p-4 rounded-lg">
+                        <p class="font-bold">Correct!</p>
+                        ${currentQuestion.explanation ? `<p class="mt-2">${currentQuestion.explanation}</p>` : ''}
+                    </div>
+                `;
+            } else {
+                feedbackHTML = `
+                    <div class="bg-red-100 text-red-700 p-4 rounded-lg">
+                        <p class="font-bold">Incorrect.</p>
+                        <p class="mt-2">The correct answer is: <strong>${currentQuestion.correctAnswer}</strong>.</p>
+                        ${currentQuestion.explanation ? `<p class="mt-2">${currentQuestion.explanation}</p>` : ''}
+                    </div>
+                `;
+            }
+            feedbackContainer.innerHTML = feedbackHTML;
+            document.getElementById('submitBtn').disabled = true;
+        }
+
+        // Function to render the sidebar navigation
+        function renderSidebar() {
+            chapterButtonsContainer.innerHTML = ''; // Clear previous buttons
+            quizData.forEach((chapter, chapterIdx) => {
+                const chapterDetails = document.createElement('details');
+                chapterDetails.className = `w-full bg-white rounded-lg shadow-xl p-6 transition-all duration-300 open:bg-gray-100`;
+                
+                const chapterSummary = document.createElement('summary');
+                chapterSummary.className = 'list-none text-xl font-bold text-gray-800 cursor-pointer flex items-center justify-between hover:text-blue-600 transition-colors duration-200';
+                chapterSummary.innerHTML = `
+                    <span>${chapter.chapter}</span>
+                    <svg class="chevron-icon w-5 h-5 text-gray-500 transform transition-transform duration-300" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                `;
+                chapterDetails.appendChild(chapterSummary);
+                
+                const lessonContainer = document.createElement('div');
+                lessonContainer.className = 'space-y-2 mt-4';
+                
+                chapter.lessons.forEach((lesson, lessonIdx) => {
+                    const lessonButton = document.createElement('button');
+                    lessonButton.textContent = lesson.title;
+                    lessonButton.dataset.chapterIndex = chapterIdx;
+                    lessonButton.dataset.lessonIndex = lessonIdx;
+                    lessonButton.className = `w-full text-left py-2 px-3 rounded-lg transition-all duration-200 text-wrap break-words ${
+                        chapterIdx === currentChapterIndex && lessonIdx === currentLessonIndex
+                        ? 'bg-blue-600 text-white font-semibold shadow-md'
+                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                    }`;
+                    lessonContainer.appendChild(lessonButton);
+                });
+
+                chapterDetails.appendChild(lessonContainer);
+                chapterButtonsContainer.appendChild(chapterDetails);
+
+                // Open the details element for the current chapter
+                if (chapterIdx === currentChapterIndex) {
+                    chapterDetails.open = true;
+                }
+            });
+        }
+
+        // Function to update the state of navigation buttons
+        function updateNavButtons() {
+            const currentLesson = quizData[currentChapterIndex].lessons[currentLessonIndex];
+            prevBtn.disabled = currentQuestionIndex === 0;
+            nextBtn.disabled = currentQuestionIndex === currentLesson.questions.length - 1;
+        }
+
+        // Event listeners for navigation buttons
         nextBtn.addEventListener('click', () => {
-            if (currentQuestionIndex < quizData.length - 1) {
+            const currentLesson = quizData[currentChapterIndex].lessons[currentLessonIndex];
+            if (currentQuestionIndex < currentLesson.questions.length - 1) {
                 currentQuestionIndex++;
-                renderQuestion();
+                renderQuiz();
             }
         });
 
         prevBtn.addEventListener('click', () => {
             if (currentQuestionIndex > 0) {
                 currentQuestionIndex--;
-                renderQuestion();
-            }
-        });
-        
-        // Event listener for the chapter buttons using event delegation
-        chapterButtonsContainer.addEventListener('click', (event) => {
-            const button = event.target.closest('button');
-            if (button && button.dataset.index) {
-                currentQuestionIndex = parseInt(button.dataset.index, 10);
-                renderQuestion();
+                renderQuiz();
             }
         });
 
-        // Render the first question and buttons when the page loads
-        document.addEventListener('DOMContentLoaded', renderQuestion);
+        // Event listener for the chapter/lesson buttons using event delegation
+        chapterButtonsContainer.addEventListener('click', (event) => {
+            const button = event.target.closest('button');
+            if (button && button.dataset.chapterIndex && button.dataset.lessonIndex) {
+                currentChapterIndex = parseInt(button.dataset.chapterIndex, 10);
+                currentLessonIndex = parseInt(button.dataset.lessonIndex, 10);
+                currentQuestionIndex = 0; // Reset question index when a new lesson is selected
+                renderSidebar();
+                renderQuiz();
+            }
+        });
+
+        // Initial render when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            renderSidebar();
+        });
     </script>
 </body>
 </html>
