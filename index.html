@@ -55,7 +55,7 @@
         <div class="flex-1 bg-white rounded-lg shadow-xl p-8 md:p-12 space-y-8">
 
             <!-- Header -->
-            <h1 class="text-3xl font-bold text-center text-gray-800">Quiz</h1>
+            <h1 id="main-quiz-title" class="text-3xl font-bold text-center text-gray-800">Quiz</h1>
             
             <!-- Quiz content will be dynamically inserted here -->
             <div id="quiz-container" class="space-y-6">
@@ -90,7 +90,7 @@
     </div>
 
     <script>
-        // --- Centralized Quiz Data ---
+        // --- Centralized Quiz Data (Your original data) ---
         const quizData = {
             chapters: [
                 {
@@ -400,316 +400,304 @@
             ]
         };
 
-        // --- Main Quiz App Logic ---
-
-        // State variables to keep track of the current position in the quiz
-        let currentChapterIndex = -1; // -1 indicates no lesson is selected
-        let currentLessonIndex = -1; // -1 indicates no lesson is selected
+        // --- Global State and DOM Elements ---
+        let currentLessonIndex = -1;
         let currentQuestionIndex = 0;
-        let isAnswerSubmitted = false; // New state variable to control 'Next' button
-        let isSearchMode = false; // New state variable for search mode
-        let searchResults = []; // Array to hold questions found by search
+        let allLessons = [];
+        let allLessonsElements = [];
 
-        // DOM element references
+        const mainQuizTitle = document.getElementById('main-quiz-title');
         const quizContainer = document.getElementById('quiz-container');
         const chapterButtonsContainer = document.getElementById('chapter-buttons-container');
+        const searchInput = document.getElementById('search-input');
+        const quizNavigation = document.getElementById('quiz-navigation');
         const prevBtn = document.getElementById('prevBtn');
         const nextBtn = document.getElementById('nextBtn');
-        const quizNavigation = document.getElementById('quiz-navigation');
-        const searchInput = document.getElementById('search-input');
-
-        // Modal element references
         const modal = document.getElementById('modal');
         const modalTitle = document.getElementById('modal-title');
         const modalContent = document.getElementById('modal-content');
         const modalCloseBtn = document.getElementById('modal-close');
 
-        // Function to show a custom modal (replaces alert())
+        // --- Helper Functions ---
+
+        /**
+         * Flattens the nested quiz data into a single array of lessons.
+         * @param {object} data The quiz data object.
+         * @returns {Array<object>} A flat array of all lessons.
+         */
+        function flattenLessons(data) {
+            const lessons = [];
+            data.chapters.forEach(chapter => {
+                chapter.lessons.forEach(lesson => {
+                    lessons.push({
+                        chapter: chapter.chapter,
+                        ...lesson
+                    });
+                });
+            });
+            return lessons;
+        }
+
+        /**
+         * Displays a custom modal with a title and message.
+         * @param {string} title The title of the modal.
+         * @param {string} message The content of the modal.
+         */
         function showModal(title, message) {
             modalTitle.textContent = title;
             modalContent.textContent = message;
             modal.classList.remove('hidden');
         }
 
-        // Close modal button event listener
-        modalCloseBtn.addEventListener('click', () => {
+        /**
+         * Closes the custom modal.
+         */
+        function closeModal() {
             modal.classList.add('hidden');
-        });
+        }
 
-        // Function to render the current question and its options
-        function renderQuiz() {
-            // Reset the 'answer submitted' state for a new question
-            isAnswerSubmitted = false;
+        /**
+         * Updates the active class on the sidebar lesson buttons.
+         * @param {number} activeIndex The index of the lesson to highlight.
+         */
+        function updateActiveLessonButton(activeIndex) {
+            allLessonsElements.forEach((btn, index) => {
+                if (index === activeIndex) {
+                    btn.classList.add('active-lesson-button');
+                } else {
+                    btn.classList.remove('active-lesson-button');
+                }
+            });
+        }
 
-            // Check if a lesson is currently selected
-            if (currentChapterIndex === -1 && !isSearchMode) {
-                quizContainer.innerHTML = `<p class="text-center text-gray-500 text-lg">Please select a lesson from the left to begin the quiz.</p>`;
-                quizNavigation.classList.add('hidden');
+        /**
+         * Renders the current question and updates the UI state.
+         */
+        function showQuestion() {
+            // Check if we are at the end of the quiz
+            if (currentLessonIndex >= allLessons.length) {
+                endQuiz();
                 return;
             }
-
-            const questions = isSearchMode ? searchResults : quizData.chapters[currentChapterIndex].lessons[currentLessonIndex].questions;
             
-            // Check for empty search results or no questions in a lesson
-            if (questions.length === 0) {
-                quizContainer.innerHTML = `<p class="text-center text-gray-500 text-lg">No questions found for this selection.</p>`;
-                quizNavigation.classList.add('hidden');
-                return;
+            const currentLesson = allLessons[currentLessonIndex];
+            const currentQuestion = currentLesson.questions[currentQuestionIndex];
+
+            // Update main quiz title
+            mainQuizTitle.textContent = currentLesson.title;
+
+            // Clear previous question
+            quizContainer.innerHTML = '';
+
+            // Create question element
+            const questionElement = document.createElement('h2');
+            questionElement.className = 'text-2xl font-semibold text-gray-700 mb-4';
+            questionElement.textContent = currentQuestion.question;
+
+            // Create answers list
+            const answersList = document.createElement('ul');
+            answersList.className = 'space-y-4';
+
+            currentQuestion.possibleAnswers.forEach(answer => {
+                const answerItem = document.createElement('li');
+                const answerButton = document.createElement('button');
+                answerButton.className = 'w-full text-left py-3 px-6 bg-gray-100 rounded-lg shadow-sm transition-colors duration-200 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2';
+                answerButton.textContent = answer;
+                
+                // Add click event for checking answer
+                answerButton.addEventListener('click', () => {
+                    checkAnswer(answer, currentQuestion, answerButton);
+                });
+
+                answerItem.appendChild(answerButton);
+                answersList.appendChild(answerItem);
+            });
+
+            // Append elements to the quiz container
+            quizContainer.appendChild(questionElement);
+            quizContainer.appendChild(answersList);
+
+            // Update navigation buttons state
+            updateNavigationButtons();
+            updateActiveLessonButton(currentLessonIndex);
+        }
+
+        /**
+         * Checks the user's selected answer against the correct answer.
+         * @param {string} selectedAnswer The answer selected by the user.
+         * @param {object} questionObj The current question object.
+         * @param {HTMLElement} selectedButton The button element that was clicked.
+         */
+        function checkAnswer(selectedAnswer, questionObj, selectedButton) {
+            const allAnswerButtons = quizContainer.querySelectorAll('button');
+            allAnswerButtons.forEach(btn => {
+                btn.disabled = true; // Disable all buttons after one is selected
+                if (btn.textContent === questionObj.correctAnswer) {
+                    btn.classList.add('bg-green-500', 'text-white', 'hover:bg-green-500');
+                } else {
+                    btn.classList.add('bg-red-500', 'text-white', 'hover:bg-red-500');
+                }
+            });
+
+            // Add correct/incorrect styling to the selected button
+            if (selectedAnswer === questionObj.correctAnswer) {
+                showModal("Correct!", `Great job! Your answer is correct.`);
+            } else {
+                showModal("Incorrect", `The correct answer is: ${questionObj.correctAnswer}.<br><br>Explanation: ${questionObj.explanation}`);
+            }
+        }
+
+        /**
+         * Updates the state (disabled/enabled) of the navigation buttons.
+         */
+        function updateNavigationButtons() {
+            // Disable 'Previous' button if on the first question of the first lesson
+            if (currentLessonIndex === 0 && currentQuestionIndex === 0) {
+                prevBtn.disabled = true;
+            } else {
+                prevBtn.disabled = false;
             }
 
-            const currentQuestion = questions[currentQuestionIndex];
-            const totalQuestions = questions.length;
-            const lessonTitle = isSearchMode ? 'Search Results' : quizData.chapters[currentChapterIndex].lessons[currentLessonIndex].title;
-            const chapterTitle = isSearchMode ? '' : quizData.chapters[currentChapterIndex].chapter;
+            const currentLesson = allLessons[currentLessonIndex];
+            // Disable 'Next' button if on the last question of the last lesson
+            if (currentLessonIndex === allLessons.length - 1 && currentQuestionIndex === currentLesson.questions.length - 1) {
+                nextBtn.disabled = true;
+            } else {
+                nextBtn.disabled = false;
+            }
+        }
 
-            // Build the HTML for the current question
+        /**
+         * Displays the quiz completion message.
+         */
+        function endQuiz() {
+            mainQuizTitle.textContent = "Quiz Complete!";
             quizContainer.innerHTML = `
-                <div class="space-y-4">
-                    ${!isSearchMode ? `<h2 class="text-2xl font-bold text-gray-800">${chapterTitle}</h2>` : ''}
-                    <h3 class="text-xl font-semibold text-gray-700">${lessonTitle}</h3>
-                </div>
-                <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
-                    <p class="text-lg font-medium text-gray-700">Question ${currentQuestionIndex + 1}/${totalQuestions}:</p>
-                    <p class="text-xl font-semibold mt-2">${currentQuestion.question}</p>
-                    <div class="mt-4 space-y-3" id="answer-options">
-                        ${currentQuestion.possibleAnswers.map((answer) => `
-                            <label class="block cursor-pointer p-4 rounded-lg bg-white border border-gray-200 hover:bg-blue-50 transition-colors duration-200">
-                                <input type="radio" name="answer" value="${answer}" class="mr-2">
-                                <span class="text-gray-800">${answer}</span>
-                            </label>
-                        `).join('')}
-                    </div>
-                    <button id="submitBtn" class="mt-6 w-full py-3 px-6 bg-green-600 text-white rounded-lg shadow-md transition-all duration-300 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
-                        Submit Answer
-                    </button>
-                    <div id="feedback-container" class="mt-4 p-4 rounded-lg hidden"></div>
+                <div class="text-center space-y-4">
+                    <p class="text-2xl font-semibold text-gray-700">Congratulations!</p>
+                    <p class="text-lg text-gray-600">You have successfully completed all the lessons.</p>
                 </div>
             `;
-            quizNavigation.classList.remove('hidden');
-
-            const submitBtn = document.getElementById('submitBtn');
-            submitBtn.addEventListener('click', handleSubmit);
-            updateNavButtons();
+            quizNavigation.classList.add('hidden');
         }
 
-        // Function to handle answer submission
-        function handleSubmit() {
-            const selectedAnswer = document.querySelector('input[name="answer"]:checked')?.value;
-            const questions = isSearchMode ? searchResults : quizData.chapters[currentChapterIndex].lessons[currentLessonIndex].questions;
-            const currentQuestion = questions[currentQuestionIndex];
-            const feedbackContainer = document.getElementById('feedback-container');
-            const answerOptions = document.getElementById('answer-options');
+        /**
+         * Builds the sidebar with collapsible chapters and lesson buttons.
+         * @param {Array<object>} filteredLessons Optional array of lessons to display.
+         */
+        function setupUI(filteredLessons = allLessons) {
+            chapterButtonsContainer.innerHTML = '';
+            allLessonsElements = [];
+            
+            // Group lessons by chapter for display
+            const chapters = quizData.chapters.map(chapter => {
+                return {
+                    chapter: chapter.chapter,
+                    lessons: filteredLessons.filter(lesson => lesson.chapter === chapter.chapter)
+                };
+            }).filter(chapter => chapter.lessons.length > 0);
 
-            if (!selectedAnswer) {
-                showModal('Answer Required', 'Please select an answer before submitting.');
+            if (chapters.length === 0) {
+                chapterButtonsContainer.innerHTML = `<p class="text-center text-gray-500">No lessons found.</p>`;
                 return;
             }
 
-            feedbackContainer.classList.remove('hidden');
-            const isCorrect = selectedAnswer === currentQuestion.correctAnswer;
-            
-            // Disable all radio buttons after submission
-            const radioButtons = document.querySelectorAll('input[name="answer"]');
-            radioButtons.forEach(radio => radio.disabled = true);
-            
-            // Highlight the correct and incorrect answers
-            radioButtons.forEach(radio => {
-                const parentLabel = radio.closest('label');
-                if (radio.value === currentQuestion.correctAnswer) {
-                    parentLabel.classList.remove('bg-white', 'hover:bg-blue-50');
-                    parentLabel.classList.add('bg-green-200', 'border-green-400');
-                } else if (radio.checked) {
-                    parentLabel.classList.remove('bg-white', 'hover:bg-blue-50');
-                    parentLabel.classList.add('bg-red-200', 'border-red-400');
-                }
-            });
-
-            let feedbackHTML = '';
-            if (isCorrect) {
-                feedbackHTML = `
-                    <div class="bg-green-100 text-green-700 p-4 rounded-lg">
-                        <p class="font-bold">Correct!</p>
-                        ${currentQuestion.explanation ? `<p class="mt-2">${currentQuestion.explanation}</p>` : ''}
-                    </div>
-                `;
-            } else {
-                feedbackHTML = `
-                    <div class="bg-red-100 text-red-700 p-4 rounded-lg">
-                        <p class="font-bold">Incorrect.</p>
-                        <p class="mt-2">The correct answer is: <strong>${currentQuestion.correctAnswer}</strong>.</p>
-                        ${currentQuestion.explanation ? `<p class="mt-2">${currentQuestion.explanation}</p>` : ''}
-                    </div>
-                `;
-            }
-            feedbackContainer.innerHTML = feedbackHTML;
-            document.getElementById('submitBtn').disabled = true;
-            
-            isAnswerSubmitted = true;
-            updateNavButtons();
-        }
-        
-        // Function to update the Previous and Next buttons' state (enabled/disabled)
-        function updateNavButtons() {
-            const questions = isSearchMode ? searchResults : quizData.chapters[currentChapterIndex].lessons[currentLessonIndex].questions;
-            const totalQuestions = questions.length;
-            prevBtn.disabled = currentQuestionIndex === 0;
-            
-            // Next button is disabled until an answer is submitted
-            nextBtn.disabled = !isAnswerSubmitted || currentQuestionIndex >= totalQuestions - 1;
-
-            if (isSearchMode && currentQuestionIndex >= totalQuestions - 1) {
-                nextBtn.textContent = 'End of Results';
-            } else if (currentQuestionIndex >= totalQuestions - 1) {
-                 nextBtn.textContent = 'End of Lesson';
-            } else {
-                nextBtn.textContent = 'Next »';
-            }
-        }
-
-        // Function to handle loading a new lesson when a button is clicked
-        function handleLessonButtonClick(chapterIdx, lessonIdx) {
-            currentChapterIndex = chapterIdx;
-            currentLessonIndex = lessonIdx;
-            currentQuestionIndex = 0;
-            isSearchMode = false;
-            searchInput.value = ''; // Clear search input
-            updateUI();
-        }
-
-        // NEW function to manage the active button highlighting
-        function updateActiveLessonButtonUI() {
-            // Remove active class from all buttons
-            document.querySelectorAll('.active-lesson-button').forEach(btn => {
-                btn.classList.remove('active-lesson-button');
-                btn.classList.remove('bg-blue-600');
-                btn.classList.add('bg-white', 'text-gray-800', 'hover:bg-blue-200', 'hover:text-blue-800');
-            });
-
-            // Add active class to the current lesson button, if a lesson is selected
-            if (currentChapterIndex !== -1 && currentLessonIndex !== -1) {
-                const lessonButtons = document.querySelectorAll('.lesson-button');
-                const targetId = `lesson-${currentChapterIndex}-${currentLessonIndex}`;
-                const targetButton = document.getElementById(targetId);
-                if (targetButton) {
-                    targetButton.classList.add('active-lesson-button', 'bg-blue-600', 'text-white');
-                    targetButton.classList.remove('bg-white', 'text-gray-800', 'hover:bg-blue-200', 'hover:text-blue-800');
-                }
-            }
-        }
-        
-        // Function to render the sidebar navigation with full chapters
-        function renderSidebar() {
-            chapterButtonsContainer.innerHTML = ''; // Clear previous buttons
-
-            quizData.chapters.forEach((chapter, chapterIdx) => {
+            chapters.forEach(chapter => {
                 const chapterDetails = document.createElement('details');
-                chapterDetails.className = `w-full bg-white rounded-lg shadow-xl p-6 transition-all duration-300 open:bg-gray-100`;
-
-                // Set the details to open if it's the current chapter
-                if (chapterIdx === currentChapterIndex) {
+                chapterDetails.className = 'bg-white rounded-lg shadow-xl overflow-hidden';
+                if (currentLessonIndex !== -1 && chapter.lessons.some(l => l.title === allLessons[currentLessonIndex].title)) {
                     chapterDetails.open = true;
                 }
-                
+
                 const chapterSummary = document.createElement('summary');
-                chapterSummary.className = 'list-none text-xl font-bold text-gray-800 cursor-pointer flex items-center justify-between hover:text-blue-600 transition-colors duration-200';
+                chapterSummary.className = 'flex items-center justify-between p-4 cursor-pointer font-semibold text-lg text-gray-700 hover:bg-gray-50';
                 chapterSummary.innerHTML = `
                     <span>${chapter.chapter}</span>
-                    <svg class="chevron-icon w-5 h-5 text-gray-500 transform transition-transform duration-300" fill="currentColor" viewBox="0 0 20 20">
+                    <svg class="chevron-icon w-5 h-5 text-gray-500 transition-transform duration-200" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                     </svg>
                 `;
-                chapterDetails.appendChild(chapterSummary);
 
                 const lessonList = document.createElement('div');
-                lessonList.className = 'mt-4 space-y-2';
-                
-                chapter.lessons.forEach((lesson, lessonIdx) => {
+                lessonList.className = 'border-t border-gray-200 p-2 space-y-2';
+
+                chapter.lessons.forEach(lesson => {
                     const lessonButton = document.createElement('button');
-                    lessonButton.id = `lesson-${chapterIdx}-${lessonIdx}`;
-                    lessonButton.className = `lesson-button w-full text-left py-3 px-4 rounded-lg transition-all duration-200 bg-white text-gray-800 hover:bg-blue-200 hover:text-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2`;
+                    lessonButton.className = 'w-full text-left py-2 px-4 rounded-lg transition-colors duration-200 text-gray-700 hover:bg-gray-100';
                     lessonButton.textContent = lesson.title;
+                    allLessonsElements.push(lessonButton);
+
+                    // Set up click listener for lesson buttons
                     lessonButton.addEventListener('click', () => {
-                        handleLessonButtonClick(chapterIdx, lessonIdx);
+                        const newLessonIndex = allLessons.findIndex(l => l.title === lesson.title);
+                        if (newLessonIndex !== -1) {
+                            currentLessonIndex = newLessonIndex;
+                            currentQuestionIndex = 0;
+                            showQuestion();
+                            quizNavigation.classList.remove('hidden');
+                            updateActiveLessonButton(currentLessonIndex);
+                        }
                     });
                     lessonList.appendChild(lessonButton);
                 });
-                
+
+                chapterDetails.appendChild(chapterSummary);
                 chapterDetails.appendChild(lessonList);
                 chapterButtonsContainer.appendChild(chapterDetails);
             });
-            updateActiveLessonButtonUI();
-        }
-
-        // Function to tie all updates together
-        function updateUI() {
-            renderSidebar();
-            renderQuiz();
-        }
-        
-        // --- Navigation Event Listeners ---
-        nextBtn.addEventListener('click', () => {
-            const questions = isSearchMode ? searchResults : quizData.chapters[currentChapterIndex].lessons[currentLessonIndex].questions;
-            if (currentQuestionIndex < questions.length - 1) {
-                currentQuestionIndex++;
-                renderQuiz();
-            } else {
-                 showModal("End of Quiz", "You have completed all questions in this lesson.");
+            // Ensure the correct lesson is highlighted after a filter
+            if (currentLessonIndex !== -1) {
+                updateActiveLessonButton(currentLessonIndex);
             }
-        });
+        }
 
+        // --- Event Listeners for Navigation ---
         prevBtn.addEventListener('click', () => {
             if (currentQuestionIndex > 0) {
                 currentQuestionIndex--;
-                renderQuiz();
+            } else if (currentLessonIndex > 0) {
+                currentLessonIndex--;
+                currentQuestionIndex = allLessons[currentLessonIndex].questions.length - 1;
             }
+            showQuestion();
         });
-        
-        // --- Search Functionality ---
-        searchInput.addEventListener('keyup', (e) => {
-            const searchTerm = e.target.value.toLowerCase().trim();
-            if (searchTerm === '') {
-                isSearchMode = false;
-                resetQuizState();
+
+        nextBtn.addEventListener('click', () => {
+            const currentLesson = allLessons[currentLessonIndex];
+            if (currentQuestionIndex < currentLesson.questions.length - 1) {
+                currentQuestionIndex++;
+            } else if (currentLessonIndex < allLessons.length - 1) {
+                currentLessonIndex++;
+                currentQuestionIndex = 0;
             } else {
-                isSearchMode = true;
-                performSearch(searchTerm);
+                // This case is for the final question of the final lesson
+                currentQuestionIndex++; // Move past the last question index
             }
+            showQuestion();
         });
 
-        function performSearch(searchTerm) {
-            searchResults = [];
-            quizData.chapters.forEach(chapter => {
-                chapter.lessons.forEach(lesson => {
-                    lesson.questions.forEach(question => {
-                        if (
-                            question.question.toLowerCase().includes(searchTerm) ||
-                            question.correctAnswer.toLowerCase().includes(searchTerm) ||
-                            (question.explanation && question.explanation.toLowerCase().includes(searchTerm))
-                        ) {
-                            searchResults.push(question);
-                        }
-                    });
-                });
-            });
-
-            currentQuestionIndex = 0;
-            updateUI();
-        }
-
-        function resetQuizState() {
-            currentChapterIndex = -1;
-            currentLessonIndex = -1;
-            currentQuestionIndex = 0;
-            isSearchMode = false;
-            searchResults = [];
-            updateUI();
-        }
-
-        // Initial render on page load
-        document.addEventListener('DOMContentLoaded', () => {
-            updateUI();
+        // --- Search Functionality ---
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            if (searchTerm === "") {
+                setupUI(allLessons); // Show all lessons if search is empty
+                return;
+            }
+            const filteredLessons = allLessons.filter(lesson =>
+                lesson.title.toLowerCase().includes(searchTerm) ||
+                lesson.questions.some(q => q.question.toLowerCase().includes(searchTerm))
+            );
+            setupUI(filteredLessons);
         });
 
+        // --- Initialization ---
+        function init() {
+            allLessons = flattenLessons(quizData);
+            setupUI();
+            modalCloseBtn.addEventListener('click', closeModal);
+        }
+
+        init();
     </script>
 </body>
 </html>
