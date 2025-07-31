@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz App</title>
+</head>
+<body>
+    <h1>Quiz</h1>
+    <div id="quiz-container"></div>
+
+    <script>
+        // Use the Fetch API to get the data from the local JSON file.
+        // The path to the file is relative to the HTML file.
+        fetch('quiz_data.json')
+            .then(response => {
+                // Check if the response is ok (status code 200)
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                // Parse the response as JSON
+                return response.json();
+            })
+            .then(data => {
+                // The 'data' variable now holds the parsed JSON object
+                console.log(data);
+
+                // You can now access the data and use it to build your quiz.
+                // For example, to get all the continents from the Earth Quiz:
+                const earthQuizContinents = Object.keys(data["Earth Quiz"]);
+                console.log(earthQuizContinents); // ["Europe", "Asia", "America", "Australia"]
+                
+                // You can then use this data to dynamically generate the quiz
+                // questions and answers on your web page.
+                const quizContainer = document.getElementById('quiz-container');
+                quizContainer.innerHTML = '<h2>Quiz data loaded successfully! Check the console.</h2>';
+                
+            })
+            .catch(error => {
+                // Handle any errors that occurred during the fetch
+                console.error('There has been a problem with your fetch operation:', error);
+            });
+    </script>
+</body>
+</html>
