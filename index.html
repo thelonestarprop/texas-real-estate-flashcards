@@ -90,8 +90,412 @@
     </div>
 
     <script>
-        // --- Centralized Quiz Data (This will be populated asynchronously) ---
-        let quizData = null;
+        // --- Centralized Quiz Data (Your original data) ---
+        const quizData = {
+            chapters: [
+                {
+                    chapter: "Quiz 1",
+                    file: "the-basics.json",
+                    lessons: [
+                        {
+                            title: "Amortization and Terminology",
+                            questions: [
+                               
+                                {
+  "question": "Which of these is considered to be an encumbrance?",
+  "possibleAnswers": ["A lease", "A mortgage", "All of these", "An easement"],
+  "correctAnswer": "All of these",
+  "explanation": "A lease, mortgage, easement, or restriction is considered an encumbrance of a fee simple title."
+},
+                                {
+  "question": "Which of the following courses of action would the Federal Reserve Board take during an elongated period of \"tight money?\"",
+  "possibleAnswers": [
+    "Any of the following",
+    "Purchasing large blocks of government bonds",
+    "Lower the reserve requirements of bank members",
+    "Decrease the discount rate for bank members"
+  ],
+  "correctAnswer": "Any of the following",
+  "explanation": "Answers (a), (b), (c), and (d) are all courses of action taken by the Federal Reserve Board to help alleviate tight money conditions in the country."
+},
+                                {
+  "question": "A broker acting as agent for a principal has as much authority as:",
+  "possibleAnswers": [
+    "other parties believe the agent to possess.",
+    "the agent chooses to accept.",
+    "the principal actually or ostensibly confers upon him.",
+    "he chooses to accept as limited by the Statute of Limitations."
+  ],
+  "correctAnswer": "the principal actually or ostensibly confers upon him.",
+  "explanation": "An agent has as much authority as his principal actually or ostensibly confers upon him."
+},
+                                {
+  "question": "What does a general warranty deed contain?",
+  "possibleAnswers": [
+    "None of these.",
+    "Covenants regarding quiet enjoyment",
+    "Covenants that warrant the new owner’s undisturbed and clear title",
+    "Covenants that include provisions of a quitclaim deed"
+  ],
+  "correctAnswer": "Covenants that warrant the new owner’s undisturbed and clear title",
+  "explanation": "Covenants that warrant the new owner’s undisturbed and clear title are contained in a general warranty deed."
+},
+{
+  "question": "In Texas, if Heather is an agent for a buyer Harry and she shows him a property that is known to have ghosts living there according to the neighbors, but she does not inform Harry of this information, after Harry purchases the property, Heather would:",
+  "possibleAnswers": [
+    "Be considered to have misrepresented Harry",
+    "Be liable for misrepresentation",
+    "Be open to being sued by Harry if he finds out about the ghosts",
+    "Not be liable for the nondisclosure of ghosts"
+  ],
+  "correctAnswer": "Not be liable for the nondisclosure of ghosts",
+  "explanation": "In Texas, agents are absolved from any liability regarding nondisclosure of stigmatized properties."
+},                                
+           {
+  "question": "A couple is looking at houses and turns one down because they felt the price of the home was too high. This is based on what principle of real estate?",
+  "possibleAnswers": ["Conformity", "Anticipation", "Substitution", "All of these"],
+  "correctAnswer": "Substitution",
+  "explanation": "The principle of substitution is the basis of the appraisal process. Explained simply, value is set by the cost of getting an equally desirable substitute."
+},     
+                                {
+  "question": "Constructive eviction may allow for a tenant to vacate the premises before the expiration of a lease term. Which would be an example of this?",
+  "possibleAnswers": [
+    "Landlord has shown property to prospective tenant and is negotiating terms",
+    "Property cannot be used for original purpose due to unnecessary and considerable changes made by landlord",
+    "Landlord fails to make necessary repairs",
+    "All of the above"
+  ],
+  "correctAnswer": "All of the above",
+  "explanation": "All of the above are examples of constructive eviction. a) Landlord has shown property to prospective tenant and is negotiating terms b) Property cannot be used for original purpose due to unnecessary and considerable changes made by landlord c) Landlord fails to make necessary repairs"
+},
+            {
+  "question": "\"A\" receives a life estate for the life of \"X.\" \"A\" dies before \"X.\" The estate:",
+  "possibleAnswers": [
+    "ceases to exist.",
+    "reverts to the original grantor.",
+    "vests in",
+    "vests in the heirs of"
+  ],
+  "correctAnswer": "vests in the heirs of",
+  "explanation": "The estate vests in the heirs of \"A\" until \"X\" dies at which time the estate will revert to the original grantor."
+},
+                                {
+  "question": "The original amortization term minus the number of payments that have been applied refers to the:",
+  "possibleAnswers": [
+    "Remaining interest",
+    "Remaining term",
+    "Total amortization term",
+    "Loan amount"
+  ],
+  "correctAnswer": "Remaining term",
+  "explanation": "The original amortization term minus the number of payments that have been applied refers to the remaining term."
+},
+                                {
+  "question": "If Franklin, a real estate agent, intentionally speaks very highly and enthusiastically about a property he is trying to sell to a client in order to secure the deal, this type of behavior would be:",
+  "possibleAnswers": ["Puffing", "Steering", "Illegal", "Misrepresentation"],
+  "correctAnswer": "Puffing",
+  "explanation": "The term “puffing” can be used to describe “sales talk” that is used to secure a deal. As long as there is no misrepresentation, it is considered a legal practice."
+},
+<!-- NEXT 3 QUESTOINS FOLLOWING QUESTIONS ARE GENERATED BY GEMINI -->
+                                {
+                                    question: "The original amortization term minus the number of payments that have been applied refers to the:",
+                                    possibleAnswers: ["Remaining interest", "Remaining term", "Total amortization term", "Loan amount"],
+                                    correctAnswer: "Remaining term",
+                                    explanation: "The remaining term is the duration of a loan left after a certain number of payments have been made."
+                                },
+                                {
+                                    question: "What is an appraisal?",
+                                    possibleAnswers: ["A tax assessment of a property's value.", "An estimate of a property's value by a professional appraiser.", "A final offer price from a buyer.", "A legally binding contract of sale."],
+                                    correctAnswer: "An estimate of a property's value by a professional appraiser.",
+                                    explanation: "An appraisal is a professional and unbiased opinion of a home's value based on a variety of factors, including its condition, location, and recent sales of comparable properties."
+                                },
+                                {
+                                    question: "What is the process of paying off a debt in regular installments over a period of time?",
+                                    possibleAnswers: ["Foreclosure", "Refinancing", "Amortization", "Escrow"],
+                                    correctAnswer: "Amortization",
+                                    explanation: "Amortization is the process of paying off a debt with a fixed repayment schedule in regular installments over a period of time, such as with a mortgage."
+                                }
+                            ]
+                        },
+                        {
+                            title: "Legal Terms",
+                            questions: [
+                                {
+                                    question: "If Franklin, a real estate agent, intentionally speaks very highly and enthusiastically about a property he is trying to sell to a client in order to secure the deal, this type of behavior would be:",
+                                    possibleAnswers: ["Puffing", "Steering", "Illegal", "Misrepresentation"],
+                                    correctAnswer: "Puffing",
+                                    explanation: "The term “puffing” can be used to describe “sales talk” that is used to secure a deal. As long as there is no misrepresentation, it is considered a legal practice."
+                                },
+                                {
+                                    question: "What is a 'lien'?",
+                                    possibleAnswers: ["A type of property insurance.", "A legal claim on a property to secure payment of a debt.", "A document that transfers property ownership.", "The legal right to use another person's property."],
+                                    correctAnswer: "A legal claim on a property to secure payment of a debt.",
+                                    explanation: "A lien is a legal claim or a hold against a property until a debt is paid off. Examples include mortgages and tax liens."
+                                },
+                                {
+                                    question: "The legal right to use another person's property for a specific purpose is called:",
+                                    possibleAnswers: ["A deed", "An easement", "A lien", "A covenant"],
+                                    correctAnswer: "An easement",
+                                    explanation: "An easement grants the right to use or enter another person's property without possessing it. A common example is a utility company's right to access a part of your land to maintain power lines."
+                                }
+                            ]
+                        },
+                        {
+                            title: "Legal and General Principles",
+                            questions: [
+                                {
+                                    question: "Which of these is considered to be an encumbrance?",
+                                    possibleAnswers: ["A lease", "A mortgage", "All of these", "An easement"],
+                                    correctAnswer: "All of these",
+                                    explanation: "A lease, mortgage, easement, or restriction is considered an encumbrance of a fee simple title."
+                                },
+                                {
+                                    question: "A broker acting as agent for a principal has as much authority as:",
+                                    possibleAnswers: ["other parties believe the agent to possess.", "the agent chooses to accept.", "the principal actually or ostensibly confers upon him.", "he chooses to accept as limited by the Statute of Limitations."],
+                                    correctAnswer: "the principal actually or ostensibly confers upon him.",
+                                    explanation: "An agent has as much authority as his principal actually or ostensibly confers upon him."
+                                },
+                                {
+                                    question: "What does a general warranty deed contain?",
+                                    possibleAnswers: ["None of these.", "Covenants regarding quiet enjoyment", "Covenants that warrant the new owner’s undisturbed and clear title", "Covenants that include provisions of a quitclaim deed"],
+                                    correctAnswer: "Covenants that warrant the new owner’s undisturbed and clear title",
+                                    explanation: "Covenants that warrant the new owner’s undisturbed and clear title are contained in a general warranty deed."
+                                },
+                                {
+                                    question: "In Texas, if Heather is an agent for a buyer Harry and she shows him a property that is known to have ghosts living there according to the neighbors, but she does not inform Harry of this information, after Harry purchases the property, Heather would:",
+                                    possibleAnswers: ["Be considered to have misrepresented Harry", "Be liable for misrepresentation", "Be open to being sued by Harry if he finds out about the ghosts", "Not be liable for the nondisclosure of ghosts"],
+                                    correctAnswer: "Not be liable for the nondisclosure of ghosts",
+                                    explanation: "In Texas, agents are absolved from any liability regarding nondisclosure of stigmatized properties."
+                                },
+                                {
+                                    question: "Constructive eviction may allow for a tenant to vacate the premises before the expiration of a lease term. Which would be an example of this?",
+                                    possibleAnswers: ["Landlord has shown property to prospective tenant and is negotiating terms", "Property cannot be used for original purpose due to unnecessary and considerable changes made by landlord", "Landlord fails to make necessary repairs", "All of the above"],
+                                    correctAnswer: "All of the above",
+                                    explanation: "All of the above are examples of constructive eviction. a) Landlord has shown property to prospective tenant and is negotiating terms b) Property cannot be used for original purpose due to unnecessary and considerable changes made by landlord c) Landlord fails to make necessary repairs"
+                                },
+                                {
+                                    question: `"A" receives a life estate for the life of "X." "A" dies before "X." The estate:`,
+                                    possibleAnswers: ["ceases to exist.", "reverts to the original grantor.", "vests in", "vests in the heirs of"],
+                                    correctAnswer: "vests in the heirs of",
+                                    explanation: `The estate vests in the heirs of "A" until "X" dies at which time the estate will revert to the original grantor.`
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    chapter: "Mortgage Fundamentals",
+                    file: "mortgage-fundamentals.json",
+                    lessons: [
+                        {
+                            title: "Mortgage Types",
+                            questions: [
+                                {
+                                    question: "Which of the following is a key characteristic of a fixed-rate mortgage?",
+                                    possibleAnswers: ["The interest rate can change over time.", "The interest rate remains the same for the entire loan term.", "The monthly payment fluctuates based on market conditions.", "It is only available for commercial properties."],
+                                    correctAnswer: "The interest rate remains the same for the entire loan term.",
+                                    explanation: "A fixed-rate mortgage is a loan where the interest rate and monthly payment remain constant throughout the entire loan term."
+                                },
+                                {
+                                    question: "An adjustable-rate mortgage (ARM) is a mortgage loan where the interest rate on the loan:",
+                                    possibleAnswers: ["Is fixed for the life of the loan.", "Can change at pre-determined intervals.", "Is adjusted daily based on market rates.", "Is only available for jumbo loans."],
+                                    correctAnswer: "Can change at pre-determined intervals.",
+                                    explanation: "An ARM's interest rate is tied to an index and can increase or decrease periodically, affecting the monthly payment."
+                                },
+                                {
+                                    question: "What type of mortgage allows a borrower to make interest-only payments for a set period, after which the payments increase to include principal?",
+                                    possibleAnswers: ["Fixed-rate mortgage", "Balloon mortgage", "Adjustable-rate mortgage", "Interest-only mortgage"],
+                                    correctAnswer: "Interest-only mortgage",
+                                    explanation: "An interest-only mortgage allows the borrower to pay only the interest for a set period, which keeps the monthly payments low initially. After this period, the borrower must pay both principal and interest."
+                                }
+                            ]
+                        },
+                        {
+                            title: "Property Ownership",
+                            questions: [
+                                {
+                                    question: "What is a deed?",
+                                    possibleAnswers: ["A contract for a loan.", "A legal document that transfers ownership of a property.", "A property tax bill.", "A certificate of occupancy."],
+                                    correctAnswer: "A legal document that transfers ownership of a property.",
+                                    explanation: "A deed is a legal instrument used to transfer title or ownership of real property from one person to another."
+                                },
+                                {
+                                    question: "What is a 'fee simple' estate?",
+                                    possibleAnswers: ["A type of leasehold estate.", "The most complete form of private ownership of real property.", "Ownership of a property for a fixed term.", "A property owned by a government entity."],
+                                    correctAnswer: "The most complete form of private ownership of real property.",
+                                    explanation: "Fee simple is a legal term for the ownership of land and all improvements on that land, representing the most extensive rights a person can have in a property."
+                                },
+                                {
+                                    question: "When two or more individuals own property together with equal and undivided interests and the right of survivorship, this is known as:",
+                                    possibleAnswers: ["Tenancy in common", "Community property", "Joint tenancy", "Tenancy by the entirety"],
+                                    correctAnswer: "Joint tenancy",
+                                    explanation: "Joint tenancy is a form of co-ownership where the surviving owners automatically inherit a deceased owner's share of the property."
+                                }
+                            ]
+                        },
+                        {
+                            title: "Contracts and Clauses",
+                            questions: [
+                                {
+                                    question: "What is a mortgage contingency?",
+                                    possibleAnswers: ["A penalty for paying off a mortgage early.", "A clause in a purchase agreement that protects the buyer if they cannot secure financing.", "An additional fee added to the mortgage interest rate.", "A type of insurance for the property owner."],
+                                    correctAnswer: "A clause in a purchase agreement that protects the buyer if they cannot secure financing.",
+                                    explanation: "A mortgage contingency is a clause in a sales contract that specifies the sale is dependent on the buyer getting a mortgage for the property. If the buyer can't get a mortgage, they can cancel the contract without penalty."
+                                },
+                                {
+                                    question: "A clause in a mortgage that states the entire loan balance is due immediately if the borrower defaults on the loan is called:",
+                                    possibleAnswers: ["A prepayment penalty clause", "A due-on-sale clause", "An acceleration clause", "A habendum clause"],
+                                    correctAnswer: "An acceleration clause",
+                                    explanation: "An acceleration clause gives the lender the right to demand the entire remaining balance of the loan if the borrower fails to make a payment or violates other terms of the mortgage agreement."
+                                }
+                            ]
+                        },
+                        {
+                            title: "Valuation Principles",
+                            questions: [
+                                {
+                                    question: "A couple is looking at houses and turns one down because they felt the price of the home was too high. This is based on what principle of real estate?",
+                                    possibleAnswers: ["Conformity", "Anticipation", "Substitution", "All of these"],
+                                    correctAnswer: "Substitution",
+                                    explanation: "The principle of substitution is the basis of the appraisal process. Explained simply, value is set by the cost of getting an equally desirable substitute."
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    chapter: "The Closing Process",
+                    file: "the-closing-process.json",
+                    lessons: [
+                        {
+                            title: "Closing Costs",
+                            questions: [
+                                {
+                                    question: "Which of the following is typically considered a closing cost?",
+                                    possibleAnswers: ["Utility bills", "Property taxes", "Earnest money deposit", "Home appraisal fee"],
+                                    correctAnswer: "Home appraisal fee",
+                                    explanation: "Closing costs are fees associated with the purchase of a home. A home appraisal fee is a common example, while property taxes and utility bills are ongoing expenses, and an earnest money deposit is a credit toward the purchase price."
+                                },
+                                {
+                                    question: "What is a 'title search'?",
+                                    possibleAnswers: ["A search for a buyer for the property.", "A legal review of a property's history to ensure clear ownership.", "A physical inspection of the property's condition.", "A check of the buyer's credit history."],
+                                    correctAnswer: "A legal review of a property's history to ensure clear ownership.",
+                                    explanation: "A title search is a process to confirm that the person selling the property has the legal right to do so and that there are no liens or other claims against it."
+                                }
+                            ]
+                        },
+                        {
+                            title: "Escrow and Title",
+                            questions: [
+                                {
+                                    question: "What is the purpose of an escrow account?",
+                                    possibleAnswers: ["To hold funds for future property repairs.", "To save for a down payment.", "To hold funds and documents during a real estate transaction.", "To pay the real estate agent's commission."],
+                                    correctAnswer: "To hold funds and documents during a real estate transaction.",
+                                    explanation: "An escrow account is an account held by a third party (an escrow agent) on behalf of two parties in a transaction, holding the funds and documents until all conditions are met."
+                                },
+                                {
+                                    question: "What is 'title insurance'?",
+                                    possibleAnswers: ["Insurance for the physical structure of the home.", "Insurance that protects against financial loss from defects in title to real property.", "Insurance that covers a borrower in case of default.", "Insurance that covers the cost of an appraisal."],
+                                    correctAnswer: "Insurance that protects against financial loss from defects in title to real property.",
+                                    explanation: "Title insurance protects a policyholder against loss from a title defect, such as a lien, a forged document, or an undisclosed heir."
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    chapter: "Investment Properties",
+                    file: "investment-properties.json",
+                    lessons: [
+                        {
+                            title: "Types of Investment",
+                            questions: [
+                                {
+                                    question: "What is the term for a property purchased with the intention of generating income through rent?",
+                                    possibleAnswers: ["Primary residence", "Second home", "Rental property", "Vacation home"],
+                                    correctAnswer: "Rental property",
+                                    explanation: "A rental property is a real estate investment where the owner leases the property to tenants to generate income."
+                                },
+                                {
+                                    question: "What is 'flipping' a property?",
+                                    possibleAnswers: ["Selling a property at a loss.", "Buying a property, making improvements, and then selling it for a profit.", "Buying a property to use as a rental.", "The process of refinancing a mortgage."],
+                                    correctAnswer: "Buying a property, making improvements, and then selling it for a profit.",
+                                    explanation: "Flipping is a real estate investment strategy in which an investor buys a property, renovates it, and quickly sells it for a profit."
+                                }
+                            ]
+                        },
+                        {
+                            title: "Financial Metrics",
+                            questions: [
+                                {
+                                    question: "What does 'Cap Rate' stand for in real estate investment?",
+                                    possibleAnswers: ["Capitalization Rate", "Closing Asset Price", "Cash Asset Ratio", "Credit Application Ratio"],
+                                    correctAnswer: "Capitalization Rate",
+                                    explanation: "Capitalization Rate (Cap Rate) is a financial metric used to estimate the potential return on a real estate investment. It is the ratio of net operating income to the property's asset value."
+                                },
+                                {
+                                    question: "What is 'cash flow' in the context of rental properties?",
+                                    possibleAnswers: ["The total rent collected per year.", "The profit from selling the property.", "The money left over after paying all expenses, including the mortgage.", "The total value of the property's assets."],
+                                    correctAnswer: "The money left over after paying all expenses, including the mortgage.",
+                                    explanation: "Cash flow is the net income from a rental property, calculated by subtracting all operating expenses (mortgage, taxes, insurance, etc.) from the rental income."
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    chapter: "Real Estate Financing",
+                    file: "real-estate-financing.json",
+                    lessons: [
+                        {
+                            title: "Loan Types",
+                            questions: [
+                                {
+                                    question: "Which loan is backed by the U.S. government and is popular for first-time homebuyers?",
+                                    possibleAnswers: ["Conventional loan", "FHA loan", "Jumbo loan", "Bridge loan"],
+                                    correctAnswer: "FHA loan",
+                                    explanation: "An FHA loan is a mortgage issued by an FHA-approved lender and insured by the Federal Housing Administration. They are popular with first-time homebuyers due to lower down payment requirements."
+                                },
+                                {
+                                    question: "What is a conventional loan?",
+                                    possibleAnswers: ["A loan backed by the government.", "A loan that meets the guidelines set by Fannie Mae and Freddie Mac.", "A loan for a commercial property only.", "A loan with an adjustable interest rate."],
+                                    correctAnswer: "A loan that meets the guidelines set by Fannie Mae and Freddie Mac.",
+                                    explanation: "A conventional loan is not guaranteed or insured by the government. It is typically a loan that conforms to the loan limits and guidelines set by government-sponsored enterprises like Fannie Mae and Freddie Mac."
+                                }
+                            ]
+                        },
+                        {
+                            title: "Credit and Debt",
+                            questions: [
+                                {
+                                    question: "What is a 'debt-to-income' ratio (DTI)?",
+                                    possibleAnswers: ["A ratio of all your income to all your expenses.", "A ratio of your gross income to your net income.", "A ratio of your monthly debt payments to your gross monthly income.", "A ratio of your credit score to your total debt."],
+                                    correctAnswer: "A ratio of your monthly debt payments to your gross monthly income.",
+                                    explanation: "The debt-to-income (DTI) ratio is a personal finance measure that compares your total monthly debt payments to your gross monthly income. It helps lenders assess your ability to manage monthly payments."
+                                },
+                                {
+                                    question: "What is the primary factor used by lenders to assess a borrower's creditworthiness?",
+                                    possibleAnswers: ["Employment history", "Savings account balance", "Credit score", "Age"],
+                                    correctAnswer: "Credit score",
+                                    explanation: "A credit score is a numerical value that represents a person's creditworthiness. It is a key factor lenders use to decide whether to approve a loan application and what interest rate to offer."
+                                }
+                            ]
+                        },
+                        {
+                            title: "Economic Influences",
+                            questions: [
+                                {
+                                    question: `Which of the following courses of action would the Federal Reserve Board take during an elongated period of "tight money?"`,
+                                    possibleAnswers: ["Any of the following", "Purchasing large blocks of government bonds", "Lower the reserve requirements of bank members", "Decrease the discount rate for bank members"],
+                                    correctAnswer: "Any of the following",
+                                    explanation: `Answers (a), (b), (c), and (d) are all courses of action taken by the Federal Reserve Board to help alleviate tight money conditions in the country.`
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        };
 
         // --- DOM Elements ---
         const chapterContainer = document.getElementById('chapter-buttons-container');
@@ -108,7 +512,6 @@
         let selectedLessonTitle = null;
 
         // --- Event Listeners ---
-        // We call the async initQuiz function to start the data fetching process.
         document.addEventListener('DOMContentLoaded', initQuiz);
         nextBtn.addEventListener('click', showNextQuestion);
         prevBtn.addEventListener('click', showPreviousQuestion);
@@ -117,49 +520,11 @@
         // --- Functions ---
         
         /**
-         * Initializes the quiz app by fetching and parsing the JSON data.
-         * This function is asynchronous as it uses the `fetch` API.
+         * Initializes the quiz app by displaying the chapters and lessons.
          */
-        async function initQuiz() {
-            // Define the paths to your JSON files
-            const filePaths = ['Quiz 1.json', 'Quiz 2.json', 'Quiz 3.json'];
-
-            try {
-                // Use Promise.all to fetch all JSON files concurrently
-                const responses = await Promise.all(filePaths.map(path => fetch(path)));
-                
-                // Check if any fetch failed
-                for (const response of responses) {
-                    if (!response.ok) {
-                        throw new Error(`Failed to load ${response.url}: ${response.statusText}`);
-                    }
-                }
-
-                // Parse the JSON data from each response
-                const allQuestions = await Promise.all(responses.map(res => res.json()));
-
-                // Combine the data into the structure expected by the app.
-                // We'll create a chapter for each JSON file.
-                quizData = {
-                    chapters: allQuestions.map((questions, index) => ({
-                        chapter: `Chapter ${index + 1}`,
-                        lessons: [{
-                            title: `Quiz ${index + 1}`,
-                            questions: questions
-                        }]
-                    }))
-                };
-                
-                // Once data is loaded, remove the loading message and display the chapters.
-                loadingText.remove();
-                displayChapters(quizData.chapters);
-
-            } catch (error) {
-                console.error('Failed to load quiz data:', error);
-                // Show a modal error message to the user
-                showModal('Error', `Could not load quiz data. Please ensure the files exist: ${error.message}`, 'bg-red-500');
-                loadingText.textContent = 'Failed to load quiz data.';
-            }
+        function initQuiz() {
+            loadingText.remove();
+            displayChapters(quizData.chapters);
         }
 
         /**
@@ -314,12 +679,10 @@
          */
         function updateNavigationButtons() {
             prevBtn.disabled = currentQuestionIndex === 0;
-            if (currentLessonQuestions) {
-              nextBtn.disabled = currentQuestionIndex >= currentLessonQuestions.length - 1;
-            }
+            nextBtn.disabled = currentQuestionIndex >= currentLessonQuestions.length - 1;
             
             // If quiz is over, hide both
-            if (currentLessonQuestions && currentQuestionIndex >= currentLessonQuestions.length) {
+            if (currentQuestionIndex >= currentLessonQuestions.length) {
                 quizNavigation.classList.add('hidden');
             } else {
                 quizNavigation.classList.remove('hidden');
@@ -418,8 +781,6 @@
          * Filters lessons based on search input value.
          */
         function filterLessons() {
-            if (!quizData) return; // Wait for data to load
-            
             const searchTerm = searchInput.value.toLowerCase();
             const allLessons = document.querySelectorAll('.lesson-button');
 
