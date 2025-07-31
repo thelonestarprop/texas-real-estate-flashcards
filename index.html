@@ -77,7 +77,6 @@
 
     <script>
         // --- Centralized Quiz Data ---
-        // I have moved all your mock data into a single object for better organization.
         const quizData = {
             chapters: [
                 {
@@ -308,6 +307,7 @@
         let currentChapterIndex = 0;
         let currentLessonIndex = 0;
         let currentQuestionIndex = 0;
+        let isAnswerSubmitted = false; // New state variable to control 'Next' button
 
         // DOM element references
         const quizContainer = document.getElementById('quiz-container');
@@ -336,6 +336,9 @@
 
         // Function to render the current question and its options
         function renderQuiz() {
+            // Reset the 'answer submitted' state for a new question
+            isAnswerSubmitted = false;
+
             // Check if a lesson is currently selected
             if (currentChapterIndex === -1) {
                 quizContainer.innerHTML = `<p class="text-center text-gray-500 text-lg">Please select a lesson from the left to begin the quiz.</p>`;
@@ -406,6 +409,10 @@
             }
             feedbackContainer.innerHTML = feedbackHTML;
             document.getElementById('submitBtn').disabled = true;
+
+            // Mark the question as answered and update the nav buttons
+            isAnswerSubmitted = true;
+            updateNavButtons();
         }
 
         // Function to handle loading a new lesson when a button is clicked
@@ -468,14 +475,15 @@
             const isLastQuestion = currentChapterIndex === quizData.chapters.length - 1 && currentLessonIndex === currentChapter.lessons.length - 1 && currentQuestionIndex === currentLesson.questions.length - 1;
 
             prevBtn.disabled = isFirstQuestion;
-            nextBtn.disabled = isLastQuestion;
+            // The next button is only enabled if an answer has been submitted and it's not the last question
+            nextBtn.disabled = !isAnswerSubmitted || isLastQuestion;
         }
 
         // Event listener for the "Next" button
         nextBtn.addEventListener('click', () => {
             const currentChapter = quizData.chapters[currentChapterIndex];
             const currentLesson = currentChapter.lessons[currentLessonIndex];
-
+            
             // If there's a next question in the current lesson, go to it
             if (currentQuestionIndex < currentLesson.questions.length - 1) {
                 currentQuestionIndex++;
@@ -508,28 +516,27 @@
             // If it's the first question of the current lesson, check for a previous lesson
             else if (currentLessonIndex > 0) {
                 currentLessonIndex--;
-                // Go to the last question of the previous lesson
-                currentQuestionIndex = currentChapter.lessons[currentLessonIndex].questions.length - 1;
+                // Set to the last question of the previous lesson
+                currentQuestionIndex = currentChapter.lessons[currentLessonIndex].questions.length - 1; 
                 renderQuiz();
             }
             // If it's the first question of the first lesson in the current chapter, check for a previous chapter
             else if (currentChapterIndex > 0) {
                 currentChapterIndex--;
                 const prevChapter = quizData.chapters[currentChapterIndex];
-                currentLessonIndex = prevChapter.lessons.length - 1;
+                // Set to the last lesson of the previous chapter
+                currentLessonIndex = prevChapter.lessons.length - 1; 
+                // Set to the last question of the last lesson in that previous chapter
                 currentQuestionIndex = prevChapter.lessons[currentLessonIndex].questions.length - 1;
                 renderQuiz();
             }
         });
 
-        // Initial render on page load
+        // Initial setup
         document.addEventListener('DOMContentLoaded', () => {
             renderSidebar();
-            // Initially, there is no selected lesson, so hide navigation
-            currentChapterIndex = -1; 
-            quizNavigation.classList.add('hidden');
+            renderQuiz();
         });
-
     </script>
 </body>
 </html>
