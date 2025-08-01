@@ -109,6 +109,7 @@
         let fullQuizData = {}; // This will store the full quiz data after fetching
 
         // Quiz data is defined here as a JSON object, but we will fetch it as if it's an external file.
+        // THIS IS THE CRITICAL SECTION - ENSURE THIS IS EXACTLY AS PROVIDED
         const quizDataJson = `
 {
     "Module 1": {
@@ -650,7 +651,6 @@
                         detail.open = true;
                     } else {
                         // Keep current state if no search term, or explicitly set to false if desired default
-                        // For now, let's keep it as is (don't force close if no search term)
                         // detail.open = false; // Uncomment this if you want it to collapse when search is cleared
                     }
                 } else {
